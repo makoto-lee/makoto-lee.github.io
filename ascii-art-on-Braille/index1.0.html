@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        :root {
+            --button-height: 2px;
+        }
+
+        code {
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .button {
+            border: 0;
+            border-radius: 3px;
+            transition-duration: 0.2s;
+            transform: translateY(calc(-1 * var(--button-height)));
+            box-shadow: 0px calc(2px + var(--button-height)) #505050,
+                0px calc(2px + var(--button-height)) 0px 2px #50505050;
+        }
+
+        .button:hover {
+            transform: translateY(0px);
+            box-shadow: 0px 2px #505050,
+                0px 2px 0px 2px #50505050;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="file" onchange="previewFile()">
+    <br>
+    <img id="target-img" src="" alt="Image preview...">
+    <br>
+    分隔標準
+    <input id="input-range" type="range" min="0" max="255" onchange="changeBound()">
+    <br>
+    DPI
+    <textarea id="input-dpi" rows="1" cols="3" oninput="changeDPI()">1</textarea>
+    <br>
+    黑白互換
+    <input type="checkbox" id="reverse" onchange="changeColor()">
+    <br>
+    <button class="button" onclick="execute()">Execute</button>
+    <br>
+    <pre><code id="output-text">
+default output
+    </code></pre>
+</body>
+
+<script>
+
+    function previewFile() {
+        const preview = document.getElementById('target-img');
+        const file = document.querySelector('input[type=file]').files[0];
+        const reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+            // convert image file to base64 string
+            preview.src = reader.result;
+        }, false);
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+
+    const img = document.getElementById('target-img');
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext("2d");
+    var black_white_bound = 125;
+    var dpi = 2;
+    var reverse = true;
+
+    function execute() {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+        let pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        const img_buf = imageDataTo3DArray(pixels, canvas.width, canvas.height);
+        const img_buf_gray = toGrayScale2DArray(img_buf, canvas.width, canvas.height);
+        //
+        //console.log(img_buf_gray);
+        //console.log(getBrailleString(img_buf_gray, 200, 200, 1))
+        //
+
+
+        console.log(canvas.width)
+        console.log(canvas.height)
+
+        let output_textarea = document.getElementById('output-text');
+        output_textarea.textContent = getBrailleString(img_buf_gray, canvas.height, canvas.width, dpi);
+    }
+
+    function imageDataTo3DArray(pixels, width, height) {
+        let rt = Array(height).fill().map(
+            () => Array(width).fill().map(
+                () => new Uint8Array(4)));
+        for (let i = 0; i < height; i++) {
+            for (let j = 0; j < width; j++) {
+                const index = 4 * (i * width + j);
+                rt[i][j][0] = pixels[index];
+                rt[i][j][1] = pixels[index + 1];
+                rt[i][j][2] = pixels[index + 2];
+                rt[i][j][3] = pixels[index + 3];
+            }
+        }
+        return rt;
+    }
+
+    function toGrayScale2DArray(img_data, width, height) {
+        let rt = Array(height).fill().map(
+            () => new Uint8Array(width).fill());
+        for (let i = 0; i < height; i++) {
+            for (let j = 0; j < width; j++) {
+                rt[i][j] = img_data[i][j][0] * 0.299 + img_data[i][j][1] * 0.587 + img_data[i][j][2] * 0.114;
+            }
+        }
+        return rt;
+    }
+    // 1 4 2 5 3 6 7 8
+    function genUnicodeTable(start, length) {
+        return String.fromCharCode(
+            ...Array(length).fill().map((_, i) => start + i)
+        );
+    }
+
+    function filter2D(arr, x, y, len_x, len_y) {
+        let tmp = 0;
+        for (let i = 0; i < len_x; i++) {
+            for (let j = 0; j < len_y; j++) {
+                tmp += arr[x + i][y + j];
+            }
+        }
+        return tmp / (len_x * len_y);
+    }
+
+    function extract2DArray(arr, x, y, len_x, len_y) {
+        let rt = Array(len_x).fill().map(
+            () => new Uint8Array(len_y).fill());
+        for (let i = 0; i < len_x; i++) {
+            for (let j = 0; j < len_y; j++) {
+                rt[i][j] = arr[x + i][y + j];
+            }
+        }
+        return rt;
+    }
+
+    const Braille_dots_val = [1, 4, 16, 2, 8, 32, 64, 128];
+
+    function getBrailleChar(block, height, width) {
+        let dots = new Uint8Array(8);
+        let edge_len = width / 2;
+        for (let i = 0; i < 4; i++) {
+            for (let j = 0; j < 2; j++) {
+                dots[i * 2 + j] = filter2D(block, i * edge_len, j * edge_len, edge_len, edge_len);
+            }
+        }
+        for (let i = 0; i < 8; i++) {
+            if (reverse) {
+                if (dots[i] <= black_white_bound)
+                    dots[i] = 0;
+                else
+                    dots[i] = 1;
+            }
+            else {
+                if (dots[i] <= black_white_bound)
+                    dots[i] = 1;
+                else
+                    dots[i] = 0;
+            }
+        }
+        let fff = true;
+
+        let idx_diff = 0;
+        for (let i = 0; i < 8; i++) {
+            if (dots[i]) {
+                idx_diff += Braille_dots_val[i];
+            }
+        }
+        if (idx_diff != 0)
+            return String.fromCharCode(0x2800 + idx_diff);
+        return String.fromCharCode(0x2801);
+    }
+
+    function getBrailleString(img, height, width, dpi) {
+
+        let rt = String("");
+        let block_height = dpi * 4;
+        let block_width = dpi * 2;
+
+        for (let i = 0; i < height / block_height - 1; i++) {
+            for (let j = 0; j < width / block_width - 1; j++) {
+                let block = extract2DArray(img, i * block_height, j * block_width, block_height, block_width);
+                rt += getBrailleChar(block, block_height, block_width);
+            }
+            rt += '\n';
+        }
+        return rt;
+    }
+
+    function changeBound() {
+        const bar = document.getElementById("input-range");
+        black_white_bound = bar.value;
+        console.log(bar.value);
+    }
+
+    function changeDPI() {
+        const input = document.getElementById("input-dpi");
+        dpi = parseInt(input.value);
+    }
+
+    function changeColor(){
+        const input = document.getElementById("reverse");
+        console.log(input.checked);
+        reverse = input.checked;
+    }
+
+    var test = [[0, 0, 255, 255],
+    [0, 0, 255, 255],
+    [255, 255, 255, 255],
+    [255, 255, 255, 255],
+    [255, 255, 0, 0],
+    [255, 255, 0, 0],
+    [255, 255, 255, 255],
+    [255, 255, 255, 255]];
+
+    console.log(getBrailleChar(test, 8, 4));
+
+    console.log(getBrailleString(test, 8, 4, 1));
+
+    //setInterval(execute, 50);
+
+
+</script>
+
+<!--
+⡆⣐⢕⢕⢕⢕⢕⢕⢕⢕⠅⢗⢕⢕⢕⢕⢕⢕⢕⠕⠕⢕⢕⢕⢕⢕⢕⢕⢕⢕
+⢐⢕⢕⢕⢕⢕⣕⢕⢕⠕⠁⢕⢕⢕⢕⢕⢕⢕⢕⠅⡄⢕⢕⢕⢕⢕⢕⢕⢕⢕
+⢕⢕⢕⢕⢕⠅⢗⢕⠕⣠⠄⣗⢕⢕⠕⢕⢕⢕⠕⢠⣿⠐⢕⢕⢕⠑⢕⢕⠵⢕
+⢕⢕⢕⢕⠁⢜⠕⢁⣴⣿⡇⢓⢕⢵⢐⢕⢕⠕⢁⣾⢿⣧⠑⢕⢕⠄⢑⢕⠅⢕
+⢕⢕⠵⢁⠔⢁⣤⣤⣶⣶⣶⡐⣕⢽⠐⢕⠕⣡⣾⣶⣶⣶⣤⡁⢓⢕⠄⢑⢅⢑
+⠍⣧⠄⣶⣾⣿⣿⣿⣿⣿⣿⣷⣔⢕⢄⢡⣾⣿⣿⣿⣿⣿⣿⣿⣦⡑⢕⢤⠱⢐
+⢠⢕⠅⣾⣿⠋⢿⣿⣿⣿⠉⣿⣿⣷⣦⣶⣽⣿⣿⠈⣿⣿⣿⣿⠏⢹⣷⣷⡅⢐
+⣔⢕⢥⢻⣿⡀⠈⠛⠛⠁⢠⣿⣿⣿⣿⣿⣿⣿⣿⡀⠈⠛⠛⠁⠄⣼⣿⣿⡇⢔
+⢕⢕⢽⢸⢟⢟⢖⢖⢤⣶⡟⢻⣿⡿⠻⣿⣿⡟⢀⣿⣦⢤⢤⢔⢞⢿⢿⣿⠁⢕
+⢕⢕⠅⣐⢕⢕⢕⢕⢕⣿⣿⡄⠛⢀⣦⠈⠛⢁⣼⣿⢗⢕⢕⢕⢕⢕⢕⡏⣘⢕
+⢕⢕⠅⢓⣕⣕⣕⣕⣵⣿⣿⣿⣾⣿⣿⣿⣿⣿⣿⣿⣷⣕⢕⢕⢕⢕⡵⢀⢕⢕
+⢑⢕⠃⡈⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢃⢕⢕⢕
+⣆⢕⠄⢱⣄⠛⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⢁⢕⢕⠕⢁
+⣿⣦⡀⣿⣿⣷⣶⣬⣍⣛⣛⣛⡛⠿⠿⠿⠛⠛⢛⣛⣉⣭⣤⣂⢜⠕⢑⣡⣴⣿
+-->
+
+
+</html>
