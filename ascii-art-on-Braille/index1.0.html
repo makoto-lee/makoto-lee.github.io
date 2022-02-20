@@ -29,27 +29,32 @@
 </head>
 
 <body>
-    <input type="file" onchange="previewFile()">
-    <br>
-    <img id="target-img" src="" alt="Image preview...">
-    <br>
-    分隔標準
-    <input id="input-range" type="range" min="0" max="255" onchange="changeBound()">
-    <br>
-    DPI
-    <textarea id="input-dpi" rows="1" cols="3" oninput="changeDPI()">1</textarea>
-    <br>
-    黑白互換
-    <input type="checkbox" id="reverse" onchange="changeColor()">
-    <br>
-    <button class="button" onclick="execute()">Execute</button>
-    <br>
-    <pre><code id="output-text">
+    <div style="text-align:center;">
+        <input type="file" onchange="previewFile()">
+        <br>
+        <img id="target-img" src="" alt="Image preview...">
+        <br>
+        分隔標準
+        <input id="input-range" type="range" min="0" max="255" onchange="changeBound()">
+        <br>
+        DPI
+        <input id="input-dpi" type="text" maxlength="2" size="2">
+        <button class="button" onclick="DPIup()">▲</button>
+        <button class="button" onclick="DPIdown()">▼</button>
+        <br>
+        黑白互換
+        <input type="checkbox" id="reverse" onchange="changeColor()">
+        <br>
+        <button class="button" onclick="execute()">Execute</button>
+        <br>
+        <pre><code id="output-text">
 default output
     </code></pre>
+    </div>
 </body>
 
 <script>
+    document.getElementById("input-dpi").defaultValue = "1";
 
     function previewFile() {
         const preview = document.getElementById('target-img');
@@ -69,8 +74,10 @@ default output
     const img = document.getElementById('target-img');
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext("2d");
+    const DPIMAX = 99;
+    const DPIMIN = 1;
     var black_white_bound = 125;
-    var dpi = 2;
+    var dpi = 1;
     var reverse = true;
 
     function execute() {
@@ -206,12 +213,23 @@ default output
         console.log(bar.value);
     }
 
-    function changeDPI() {
-        const input = document.getElementById("input-dpi");
-        dpi = parseInt(input.value);
+    function DPIup() {
+        if (dpi < DPIMAX) {
+            let show = document.getElementById("input-dpi");
+            dpi++;
+            show.value = dpi.toString();
+        }
     }
 
-    function changeColor(){
+    function DPIdown() {
+        if (dpi > DPIMIN) {
+            let show = document.getElementById("input-dpi");
+            dpi--;
+            show.value = dpi.toString();
+        }
+    }
+
+    function changeColor() {
         const input = document.getElementById("reverse");
         console.log(input.checked);
         reverse = input.checked;
