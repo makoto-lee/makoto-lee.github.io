@@ -34,10 +34,10 @@
         <br>
         <img id="target-img" src="" alt="Image preview...">
         <br>
-        分隔標準
+        黑白分隔標準
         <input id="input-range" type="range" min="0" max="255" onchange="changeBound()">
         <br>
-        DPI
+        <label title="數值越大輸出越小，但也越不明顯">像素採樣大小</label>
         <input id="input-dpi" type="text" maxlength="2" size="2">
         <button class="button" onclick="DPIup()">▲</button>
         <button class="button" onclick="DPIdown()">▼</button>
@@ -45,10 +45,11 @@
         黑白互換
         <input type="checkbox" id="reverse" onchange="changeColor()">
         <br>
-        <button class="button" onclick="execute()">Execute</button>
+        <button class="button" style="width: 100px; height: 50px; font-size: 20px;" onclick="execute()">執行</button>
+        <button class="button" style="width: 100px; height: 50px; font-size: 20px;" onclick="copy()">複製</button>
         <br>
         <pre><code id="output-text">
-default output
+⠏⠹⡇⠗⠛⠳⠞
     </code></pre>
     </div>
 </body>
@@ -231,6 +232,12 @@ default output
         reverse = input.checked;
     }
 
+    function copy(){
+        let output = document.getElementById("output-text");
+        window.getSelection().selectAllChildren(output);
+        document.execCommand("Copy")
+    }
+    /*
     var test = [[0, 0, 255, 255],
     [0, 0, 255, 255],
     [255, 255, 255, 255],
@@ -243,7 +250,7 @@ default output
     console.log(getBrailleChar(test, 8, 4));
 
     console.log(getBrailleString(test, 8, 4, 1));
-
+    */
     //setInterval(execute, 50);
 
 
