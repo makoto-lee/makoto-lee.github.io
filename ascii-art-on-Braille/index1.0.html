@@ -87,10 +87,6 @@ default output
         let pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
         const img_buf = imageDataTo3DArray(pixels, canvas.width, canvas.height);
         const img_buf_gray = toGrayScale2DArray(img_buf, canvas.width, canvas.height);
-        //
-        //console.log(img_buf_gray);
-        //console.log(getBrailleString(img_buf_gray, 200, 200, 1))
-        //
 
 
         console.log(canvas.width)
