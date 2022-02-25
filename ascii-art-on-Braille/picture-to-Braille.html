@@ -26,7 +26,7 @@
                 0px calc(2px + var(--button-height)) 0px 2px #50505050;
         }
 
-        .button:hover{
+        .button:hover {
             background-color: azure;
         }
 
@@ -36,7 +36,7 @@
                 0px 2px 0px 2px #50505050;
         }
 
-        .func-button{
+        .func-button {
             margin-top: 20px;
             width: 130px;
             height: 40px;
@@ -59,23 +59,42 @@
             transition-duration: 0.75s;
             border-radius: 0px 5px 5px 0px;
             border-color: black;
-            border-style:solid;
+            border-style: solid;
             border-width: 3px;
+        }
+
+        #copy-sign {
+            position: fixed;
+            width: 80px;
+            height: 30px;
+            text-align: center;
+            font-size: 20px;
+
+            margin-top: -40px;
+            left: 50%;
+            transform: translate(-50%, 0%);
+
+            background-color: rgb(205, 243, 255);
+            box-shadow: 4px 4px #9ac3d6;
+            border-radius: 4px;
+
         }
     </style>
 </head>
 
 <body>
     <div id="more" onclick="morefunc()">
-        <button class="button" style="width: 50px; height: 50px;">more</button>
+        <button class="button" style="width: 50px; height: 50px;">模式</button>
     </div>
     <div id="more-funcs">
-        <button class="button func-button">a</button>
-        <br>       
-        <button class="button func-button">b</button>
-        <br>      
-        <button class="button func-button">c</button>
+        <button class="button func-button" >圖片模式</button>
+        <br>
+        <button class="button func-button" onclick="window.location.href='camera-to-Braille.html';">相機模式</button>
+        <br>
+        <button class="button func-button">coming soon</button>
     </div>
+
+    <div id="copy-sign">已複製</div>
 
     <div style="text-align:center;">
         <input type="file" onchange="previewFile()">
@@ -96,21 +115,25 @@
         <button class="button" style="width: 100px; height: 50px; font-size: 20px;" onclick="execute()">執行</button>
         <button class="button" style="width: 100px; height: 50px; font-size: 20px;" onclick="copy()">複製</button>
         <br>
-        <pre><code id="output-text">
-⠏⠹⡇⠗⠛⠳⠞
-    </code></pre>
+        <br>
+        <pre><code id="output-text">⠊⠂⠰⣰⣰⠐⠑</code></pre>
     </div>
 </body>
 
+<!-- scripts for ascii art -->
+<script src="ascii-art.js"></script>
+
+<!-- scripts for executing -->
 <script>
     document.getElementById("input-dpi").defaultValue = "1";
 
     let state = 1;
     const hide_width = "-190px";
     const unhide_width = "-3px";
+
+    const more_funcs = document.getElementById("more-funcs");
     function morefunc() {
-        const NOOOOOOOO = document.getElementById("more-funcs");
-        NOOOOOOOO.style.marginLeft = state ? hide_width : unhide_width;
+        more_funcs.style.marginLeft = state ? hide_width : unhide_width;
         state = 1 - state;
     }
     morefunc();
@@ -155,113 +178,6 @@
         output_textarea.textContent = getBrailleString(img_buf_gray, canvas.height, canvas.width, dpi);
     }
 
-    function imageDataTo3DArray(pixels, width, height) {
-        let rt = Array(height).fill().map(
-            () => Array(width).fill().map(
-                () => new Uint8Array(4)));
-        for (let i = 0; i < height; i++) {
-            for (let j = 0; j < width; j++) {
-                const index = 4 * (i * width + j);
-                rt[i][j][0] = pixels[index];
-                rt[i][j][1] = pixels[index + 1];
-                rt[i][j][2] = pixels[index + 2];
-                rt[i][j][3] = pixels[index + 3];
-            }
-        }
-        return rt;
-    }
-
-    function toGrayScale2DArray(img_data, width, height) {
-        let rt = Array(height).fill().map(
-            () => new Uint8Array(width).fill());
-        for (let i = 0; i < height; i++) {
-            for (let j = 0; j < width; j++) {
-                rt[i][j] = img_data[i][j][0] * 0.299 + img_data[i][j][1] * 0.587 + img_data[i][j][2] * 0.114;
-            }
-        }
-        return rt;
-    }
-    // 1 4 2 5 3 6 7 8
-    function genUnicodeTable(start, length) {
-        return String.fromCharCode(
-            ...Array(length).fill().map((_, i) => start + i)
-        );
-    }
-
-    function filter2D(arr, x, y, len_x, len_y) {
-        let tmp = 0;
-        for (let i = 0; i < len_x; i++) {
-            for (let j = 0; j < len_y; j++) {
-                tmp += arr[x + i][y + j];
-            }
-        }
-        return tmp / (len_x * len_y);
-    }
-
-    function extract2DArray(arr, x, y, len_x, len_y) {
-        let rt = Array(len_x).fill().map(
-            () => new Uint8Array(len_y).fill());
-        for (let i = 0; i < len_x; i++) {
-            for (let j = 0; j < len_y; j++) {
-                rt[i][j] = arr[x + i][y + j];
-            }
-        }
-        return rt;
-    }
-
-    const Braille_dots_val = [1, 4, 16, 2, 8, 32, 64, 128];
-
-    function getBrailleChar(block, height, width) {
-        let dots = new Uint8Array(8);
-        let edge_len = width / 2;
-        for (let i = 0; i < 4; i++) {
-            for (let j = 0; j < 2; j++) {
-                dots[i * 2 + j] = filter2D(block, i * edge_len, j * edge_len, edge_len, edge_len);
-            }
-        }
-        for (let i = 0; i < 8; i++) {
-            if (reverse) {
-                if (dots[i] <= black_white_bound)
-                    dots[i] = 0;
-                else
-                    dots[i] = 1;
-            }
-            else {
-                if (dots[i] <= black_white_bound)
-                    dots[i] = 1;
-                else
-                    dots[i] = 0;
-            }
-        }
-        let fff = true;
-
-        let idx_diff = 0;
-        for (let i = 0; i < 8; i++) {
-            if (dots[i]) {
-                idx_diff += Braille_dots_val[i];
-            }
-        }
-        if (idx_diff != 0)
-            return String.fromCharCode(0x2800 + idx_diff);
-        return String.fromCharCode(0x2801);
-    }
-
-    function getBrailleString(img, height, width, dpi) {
-
-        let rt = String("");
-        let block_height = dpi * 4;
-        let block_width = dpi * 2;
-
-        for (let i = 0; i < height / block_height - 1; i++) {
-            for (let j = 0; j < width / block_width - 1; j++) {
-                let block = extract2DArray(img, i * block_height, j * block_width, block_height, block_width);
-                rt += getBrailleChar(block, block_height, block_width);
-            }
-            rt += '\n';
-        }
-        return rt;
-    }
-
     function changeBound() {
         const bar = document.getElementById("input-range");
         black_white_bound = bar.value;
@@ -290,10 +206,25 @@
         reverse = input.checked;
     }
 
+
+
+    const copy_sign = document.getElementById("copy-sign");
     function copy() {
         let output = document.getElementById("output-text");
         window.getSelection().selectAllChildren(output);
         document.execCommand("Copy")
+        copy_sign.animate(
+            [
+                { marginTop: "-40px" },
+                { marginTop: "30px" },
+                { marginTop: "30px" },
+                { marginTop: "-40px" }
+            ],
+            {
+                duration: 2000,
+                easing: "cubic-bezier(.27,.88,.26,1.01)"
+                
+            });
     }
     /*
     var test = [[0, 0, 255, 255],
@@ -315,20 +246,24 @@
 </script>
 
 <!--
-⡆⣐⢕⢕⢕⢕⢕⢕⢕⢕⠅⢗⢕⢕⢕⢕⢕⢕⢕⠕⠕⢕⢕⢕⢕⢕⢕⢕⢕⢕
-⢐⢕⢕⢕⢕⢕⣕⢕⢕⠕⠁⢕⢕⢕⢕⢕⢕⢕⢕⠅⡄⢕⢕⢕⢕⢕⢕⢕⢕⢕
-⢕⢕⢕⢕⢕⠅⢗⢕⠕⣠⠄⣗⢕⢕⠕⢕⢕⢕⠕⢠⣿⠐⢕⢕⢕⠑⢕⢕⠵⢕
-⢕⢕⢕⢕⠁⢜⠕⢁⣴⣿⡇⢓⢕⢵⢐⢕⢕⠕⢁⣾⢿⣧⠑⢕⢕⠄⢑⢕⠅⢕
-⢕⢕⠵⢁⠔⢁⣤⣤⣶⣶⣶⡐⣕⢽⠐⢕⠕⣡⣾⣶⣶⣶⣤⡁⢓⢕⠄⢑⢅⢑
-⠍⣧⠄⣶⣾⣿⣿⣿⣿⣿⣿⣷⣔⢕⢄⢡⣾⣿⣿⣿⣿⣿⣿⣿⣦⡑⢕⢤⠱⢐
-⢠⢕⠅⣾⣿⠋⢿⣿⣿⣿⠉⣿⣿⣷⣦⣶⣽⣿⣿⠈⣿⣿⣿⣿⠏⢹⣷⣷⡅⢐
-⣔⢕⢥⢻⣿⡀⠈⠛⠛⠁⢠⣿⣿⣿⣿⣿⣿⣿⣿⡀⠈⠛⠛⠁⠄⣼⣿⣿⡇⢔
-⢕⢕⢽⢸⢟⢟⢖⢖⢤⣶⡟⢻⣿⡿⠻⣿⣿⡟⢀⣿⣦⢤⢤⢔⢞⢿⢿⣿⠁⢕
-⢕⢕⠅⣐⢕⢕⢕⢕⢕⣿⣿⡄⠛⢀⣦⠈⠛⢁⣼⣿⢗⢕⢕⢕⢕⢕⢕⡏⣘⢕
-⢕⢕⠅⢓⣕⣕⣕⣕⣵⣿⣿⣿⣾⣿⣿⣿⣿⣿⣿⣿⣷⣕⢕⢕⢕⢕⡵⢀⢕⢕
-⢑⢕⠃⡈⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢃⢕⢕⢕
-⣆⢕⠄⢱⣄⠛⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⢁⢕⢕⠕⢁
-⣿⣦⡀⣿⣿⣷⣶⣬⣍⣛⣛⣛⡛⠿⠿⠿⠛⠛⢛⣛⣉⣭⣤⣂⢜⠕⢑⣡⣴⣿
+⣿⣿⣿⣿⣿⣿⠝⢀⣮⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡘⢧⣿⣿⣿⣿⣻⡀⠧
+⣿⣿⣿⣿⣿⠝⢠⣾⣿⣿⣿⣿⣿⣿⠝⣿⣿⣿⣿⣿⣿⣿⣿⣿⡘⢠⡄⠷⣿⣿⣿⣹⠗⠗⠿⣿⣿⣿⡙⢤⠷⣿⣿⣿⣿⣻⡈
+⣿⣿⣿⣿⠝⢠⣿⣿⣿⣿⣿⣿⣿⡿⢀⢦⣿⣿⣿⣿⣿⣿⣿⣿⣻⠆⣿⣻⣌⡇⢿⣿⣹⠣⣸⣄⠇⢿⡙⢦⣘⣌⡇⢿⣿⣿⣻
+⣿⣿⣿⡝⠁⣾⣿⣿⣿⣿⣿⣿⣿⠙⣿⡌⣿⣿⣿⣿⣿⣿⣿⣿⣿⡈⢿⣿⣿⣿⣸⡇⢿⣹⠧⡿⣿⣸⠁⠦⣿⡎⠷⢸⣍⠷⢿
+⣿⣿⣿⠁⠦⣿⣿⣿⠝⡧⢷⣿⡿⢢⣿⣻⠆⣿⣿⣿⣿⣿⣿⣿⣿⣙⢦⡿⠗⠗⠅⠅⠁⠅⠁⠁⢧⣿⠁⣺⣌⠃⠦⣺⣬⡳⢸
+⣿⣿⡙⠁⡘⠧⣿⡝⢢⡙⢦⣿⡙⣦⣿⣿⣹⡆⣿⣿⣽⠷⣿⣿⣿⣿⠄⣻⣺⣺⠟⠕⠇⠷⣻⡀⠄⡿⠁⣿⣿⣹⡀⢷⣿⣿⣸
+⣟⣿⡙⢦⣿⡈⠗⢀⣿⡙⠄⣿⠁⣿⣿⣿⠿⢻⣌⠷⣿⡈⣌⠷⣿⣿⠁⣿⣿⡝⢠⣨⠁⠁⠄⣿⣸⠁⣦⣿⣿⣿⣿⡄⣿⣿⣿
+⣿⣿⡙⢦⣿⣿⠁⠦⣿⡙⢱⠧⠁⠟⢕⣠⣪⣾⣿⣻⣌⠳⠆⣻⣌⡷⠙⢷⣿⡙⠦⠟⠁⠁⠁⢦⣿⡙⣿⣿⣿⣿⣿⣙⢦⣿⣿
+⣿⣿⡙⢦⣿⡿⢠⣈⠧⣙⢦⡐⢀⣪⠟⠅⠅⠇⢿⣿⣿⣻⣸⣦⣿⣿⣸⣮⣿⣙⠁⢠⣪⣸⡀⢦⣿⣹⢦⣿⣿⣿⣿⣿⠁⣿⣿
+⣿⣿⡙⢦⡟⠁⢦⣿⣘⠇⠄⣻⣮⡝⢢⣺⠁⠁⠁⢷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣘⠆⠿⠟⢁⣾⣿⣿⠆⣿⣿⣿⣿⣿⡘⣿⡟
+⣿⣿⣻⠄⡙⠁⢿⣿⣿⣻⣘⢧⣿⡙⠆⠕⠁⠁⠁⢦⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣻⣺⣺⣿⣿⣿⣿⡀⣿⣿⣿⣿⣿⡙⠄⠁
+⣿⣿⣿⡘⠁⢀⠄⣿⣿⣿⡏⠘⢷⣹⠁⢢⣿⣿⠘⢦⣿⣿⣿⣿⣿⡟⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡙⣿⣿⣿⣿⣿⡙⣠⡘
+⣿⣿⣿⣿⡀⢦⣹⠆⣿⣿⣻⠁⡄⢿⣻⣈⣅⣁⣪⣿⣿⣿⣿⣿⣿⠁⣸⡇⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠙⢧⣿⣿⣿⣿⢁⣿⣿
+⣿⣿⣿⣿⣻⡄⣿⣻⠄⢿⣿⡘⢷⣸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠁⣿⣻⡈⠷⣿⣿⣿⣿⣿⣿⡿⢁⠁⣾⣿⣿⣿⠝⣦⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣙⠠⣷⣻⡆⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡙⢅⣥⣨⣺⣿⣿⣿⡿⠟⢁⣪⣿⠁⣿⣿⣿⡟⠢⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⡈⢧⣿⣹⡆⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣽⠁⣾⣿⣿⠝⢢⠝⣾⠝⣠⡈⢷⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣈⠧⣿⣿⢺⣨⣍⣅⡗⠗⣗⣗⣗⣅⣅⣥⡍⢧⣿⣿⣿⣿⣿⣈⣄⠅⠅⠁⠁⠁⠁⠁⠗⠓⠁⠷⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣹⡄⢿⡘⢄⠗⠿⣿⡈⢷⣿⣿⣿⣿⠟⢑⣦⣿⣿⣿⣿⣿⣿⠝⠁⠁⠁⠁⠁⠁⠁⠁⠁⠁⠁⠁
 -->
 
 

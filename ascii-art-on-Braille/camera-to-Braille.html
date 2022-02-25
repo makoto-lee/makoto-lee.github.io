@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Display Webcam Stream</title>
+
+    <style>        
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .func-button {
+            margin-top: 20px;
+            width: 130px;
+            height: 40px;
+        }
+
+        #more {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+        }
+
+        #more-funcs {
+            position: fixed;
+            text-align: center;
+            background-color: rgb(206, 206, 206);
+            width: 200px;
+            height: 200px;
+            top: 100px;
+            margin-left: -100px;
+            transition-duration: 0.75s;
+            border-radius: 0px 5px 5px 0px;
+            border-color: black;
+            border-style: solid;
+            border-width: 3px;
+        }
+
+        #container {
+            margin: 0px auto;
+            width: 480px;
+            height: 360px;
+            border: 3px #333 solid;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="more" onclick="morefunc()">
+        <button class="button" style="width: 50px; height: 50px;">模式</button>
+    </div>
+    <div id="more-funcs">
+        <button class="button func-button" onclick="window.location.href='picture-to-Braille.html';">圖片模式</button>
+        <br>
+        <button class="button func-button">相機模式</button>
+        <br>
+        <button class="button func-button">coming soon</button>
+    </div>
+
+    <div style="text-align: center;">
+        <div id="container">
+        </div>
+        <br>
+        <pre><code id="output-text">demo</code></pre>
+    </div>
+
+    <!-- script for camera -->
+    <script>
+        const width = document.getElementById("container").offsetWidth;
+        const height = document.getElementById("container").offsetHeight;
+
+        const constraints = { //相機限制
+            audio: false,
+            video: {
+                facingMode: "user"  //開前鏡頭
+            }
+        };
+
+        const getFrameFromVideo = (video, canvas) => {
+            const ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();   //儲存狀態
+            ctx.translate(video.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0, video.width, video.height);
+            ctx.restore(); //到此才輸出，才不會還沒整體操作完就放出，會造成畫面快速抖動
+            requestAnimationFrame(() => getFrameFromVideo(video, canvas));
+        };
+
+        const getCameraStream = video => { //要 camera 的權限
+            navigator.mediaDevices
+                .getUserMedia(constraints)
+                .then(function success(stream) {
+                    video.srcObject = stream;
+                });
+        };
+
+        const createVideo = (id, width, height) => {
+            const video = document.createElement("video");
+            video.id = id;
+            video.width = width;
+            video.height = height;
+            video.autoplay = true;
+            video.controls = true;
+            return video;
+        };
+
+        const createCanvas = (id, width, height) => {
+            const canvas = document.createElement("canvas");
+            canvas.id = id;
+            canvas.width = width;
+            canvas.height = height;
+            return canvas;
+        };
+
+
+        const video = createVideo("vid", width, height);
+        const canvas = createCanvas("canvas", width, height);
+        const container = document.getElementById("container");
+        getCameraStream(video);
+        getFrameFromVideo(video, canvas);
+        container.appendChild(canvas);
+        console.log("init");
+
+    </script>
+
+    <!-- script for ascii art -->
+    <script src="ascii-art.js"></script>
+
+    <!-- scripts for executing & loop -->
+    <script>
+        const ctx = canvas.getContext("2d");
+        const output_textarea = document.getElementById('output-text');
+        const DPIMAX = 99;
+        const DPIMIN = 1;
+        var black_white_bound = 125;
+        var dpi = 2;
+        var reverse = true;
+
+        let state = 1;
+        const hide_width = "-190px";
+        const unhide_width = "-3px";
+
+        const more_funcs = document.getElementById("more-funcs");
+        function morefunc() {
+            more_funcs.style.marginLeft = state ? hide_width : unhide_width;
+            state = 1 - state;
+        }
+        morefunc();
+
+        function execute() {
+            let pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            const img_buf = imageDataTo3DArray(pixels, canvas.width, canvas.height);
+            const img_buf_gray = toGrayScale2DArray(img_buf, canvas.width, canvas.height);
+
+            output_textarea.textContent = getBrailleString(img_buf_gray, canvas.height, canvas.width, dpi);
+        }
+
+        // keep run it
+        setInterval(execute, 50);
+
+    </script>
+</body>
+
+</html>
