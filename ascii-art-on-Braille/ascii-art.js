@@ -53,6 +53,7 @@ function extract2DArray(arr, x, y, len_x, len_y) {
 }
 
 const Braille_dots_val = [1, 4, 16, 2, 8, 32, 64, 128];
+var reverse = 0;
 
 function getBrailleChar(block, height, width) {
     // 暫定uint 16 如果 width 太大可能會 overflow
@@ -108,19 +109,13 @@ function getBrailleChar(block, height, width) {
         dots[i] /= (edge_len * edge_len);
     }
 
+    console.log(reverse);
+
     for (let i = 0; i < 8; i++) {
-        if (reverse) {
-            if (dots[i] <= black_white_bound)
-                dots[i] = 0;
-            else
-                dots[i] = 1;
-        }
-        else {
-            if (dots[i] <= black_white_bound)
-                dots[i] = 1;
-            else
-                dots[i] = 0;
-        }
+        if (dots[i] <= black_white_bound)
+            dots[i] = reverse;
+        else
+            dots[i] = 1 - reverse;
     }
 
     let idx_diff = 0;

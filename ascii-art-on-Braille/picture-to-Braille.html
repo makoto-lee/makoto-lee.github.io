@@ -87,7 +87,7 @@
         <button class="button" style="width: 50px; height: 50px;">模式</button>
     </div>
     <div id="more-funcs">
-        <button class="button func-button" >圖片模式</button>
+        <button class="button func-button">圖片模式</button>
         <br>
         <button class="button func-button" onclick="window.location.href='camera-to-Braille.html';">相機模式</button>
         <br>
@@ -160,22 +160,25 @@
     const DPIMIN = 1;
     var black_white_bound = 125;
     var dpi = 1;
-    var reverse = true;
 
     function execute() {
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0, img.width, img.height);
-        let pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-        const img_buf = imageDataTo3DArray(pixels, canvas.width, canvas.height);
-        const img_buf_gray = toGrayScale2DArray(img_buf, canvas.width, canvas.height);
+
+        if (img.getAttribute("src") != "") {
+
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+            let pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            const img_buf = imageDataTo3DArray(pixels, canvas.width, canvas.height);
+            const img_buf_gray = toGrayScale2DArray(img_buf, canvas.width, canvas.height);
 
 
-        console.log(canvas.width)
-        console.log(canvas.height)
+            console.log(canvas.width)
+            console.log(canvas.height)
 
-        let output_textarea = document.getElementById('output-text');
-        output_textarea.textContent = getBrailleString(img_buf_gray, canvas.height, canvas.width, dpi);
+            let output_textarea = document.getElementById('output-text');
+            output_textarea.textContent = getBrailleString(img_buf_gray, canvas.height, canvas.width, dpi);
+        }
     }
 
     function changeBound() {
@@ -201,12 +204,11 @@
     }
 
     function changeColor() {
-        const input = document.getElementById("reverse");
-        console.log(input.checked);
-        reverse = input.checked;
+        reverse = 1 - reverse;
+
+        console.log(reverse);
+        execute();
     }
-
-
 
     const copy_sign = document.getElementById("copy-sign");
     function copy() {
@@ -223,7 +225,7 @@
             {
                 duration: 2000,
                 easing: "cubic-bezier(.27,.88,.26,1.01)"
-                
+
             });
     }
     /*
