@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- import my WebGL scripts -->
+    <script src="WebGL.js"></script>
+    <!-- import shader source scripts -->
+    <script src="shader_source.js"></script>
+    <!-- import something special -->
+    <script src="css_font_style.js"></script>
+    <!-- import gl-matrix -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.3.2/gl-matrix-min.js"></script>
+
+    <script>
+        window.onload = function () {
+            // happy opening
+            console.log("%cALL CODES RUNS HAPPY (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧", happy_css);
+
+            var gl = initializeWebGL("glCanvas");
+            var program = initializeShader(gl, vs_rotate_source, fs_colorful_source);
+
+            const hexagon_vertices = [
+                1, 0, 0,
+                0.5, 0.866, 0,
+                -0.5, 0.866, 0,
+                -1, 0, 0,
+                -0.5, -0.866, 0,
+                0.5, -0.866, 0,
+            ];
+
+            const cube_vertices = [
+                // Front face
+                -1.0, -1.0, 1.0,
+                1.0, -1.0, 1.0,
+                1.0, 1.0, 1.0,
+                -1.0, 1.0, 1.0,
+
+                // Back face
+                -1.0, -1.0, -1.0,
+                -1.0, 1.0, -1.0,
+                1.0, 1.0, -1.0,
+                1.0, -1.0, -1.0,
+
+                // Top face
+                -1.0, 1.0, -1.0,
+                -1.0, 1.0, 1.0,
+                1.0, 1.0, 1.0,
+                1.0, 1.0, -1.0,
+
+                // Bottom face
+                -1.0, -1.0, -1.0,
+                1.0, -1.0, -1.0,
+                1.0, -1.0, 1.0,
+                -1.0, -1.0, 1.0,
+
+                // Right face
+                1.0, -1.0, -1.0,
+                1.0, 1.0, -1.0,
+                1.0, 1.0, 1.0,
+                1.0, -1.0, 1.0,
+
+                // Left face
+                -1.0, -1.0, -1.0,
+                -1.0, -1.0, 1.0,
+                -1.0, 1.0, 1.0,
+                -1.0, 1.0, -1.0,
+            ];
+
+            const colors = [
+                1.0, 0.0, 0.0, 1.0,    // red
+                1.0, 1.0, 0.0, 1.0,    // yellow
+                0.0, 1.0, 0.0, 1.0,    // lime
+                0.0, 1.0, 1.0, 1.0,    // cyan
+                0.0, 0.0, 1.0, 1.0,    // blue
+                1.0, 0.0, 1.0, 1.0,    // magenta                
+                //
+            ];
+
+
+            var rpd = new rotatePolygonDrawer(gl, program, hexagon_vertices, colors, 70, [0, 0.01, 0.01]);
+
+            function draw(timestamp) {
+
+                gl.clear(gl.COLOR_BUFFER_BIT);
+                rpd.draw();
+                requestAnimationFrame(draw);
+            }
+            requestAnimationFrame(draw);
+        }
+
+    </script>
+
+    <style>
+        #glCanvas {
+            width: 90vw;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div style="text-align: center; margin-top: 60px;">
+        <canvas id="glCanvas" width="1280" height="720"></canvas>
+    </div>
+</body>
+
+</html>
