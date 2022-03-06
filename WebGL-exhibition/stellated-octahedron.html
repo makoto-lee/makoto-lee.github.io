@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- import my WebGL scripts -->
+    <script src="WebGL.js"></script>
+    <!-- import shader source scripts -->
+    <script src="shader_source.js"></script>
+    <!-- import something special -->
+    <script src="css_font_style.js"></script>
+    <!-- import gl-matrix -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.3.2/gl-matrix-min.js"></script>
+
+    <script>
+        window.onload = function () {
+            // happy opening
+            console.log("%cALL CODES RUNS HAPPY (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧", happy_css);
+
+            var gl = initializeWebGL("glCanvas");
+            var program = initializeShader(gl, vs_rotate_source, fs_colorful_source);
+            gl.enable(gl.DEPTH_TEST);
+
+            const cube_vertices = [
+                -1.0, -1.0, -1.0,
+                1.0, -1.0, -1.0,
+                -1.0, 1.0, -1.0,
+                -1.0, -1.0, 1.0,
+                1.0, 1.0, -1.0,
+                -1.0, 1.0, 1.0,
+                1.0, -1.0, 1.0,
+                1.0, 1.0, 1.0,
+            ];
+
+            const indices = [
+                0, 4, 6,
+                0, 4, 5,
+                0, 5, 6,
+                4, 5, 6,
+                1, 2, 7,
+                1, 2, 3,
+                1, 3, 7,
+                2, 3, 7,
+            ]
+
+            const colors = [
+                1.0, 0.3, 0.3, 1.0, //red
+                0.3, 1.0, 1.0, 1.0, //cyan
+                1.0, 0.3, 1.0, 1.0, //purple
+                0.3, 0.3, 1.0, 1.0, //blue
+                //
+                1.0, 1.0, 0.3, 1.0, //yellow
+                0.3, 1.0, 0.3, 1.0, //lime
+                0.3, 1.0, 1.0, 1.0, //cyan
+                1.0, 1.0, 1.0, 1.0, //white
+            ]
+
+            var body = new rotatePolygonDrawer(gl, program, cube_vertices, colors, indices, 70, [0, 0.01, 0.01], gl.TRIANGLES);
+            //var hex = new rotatePolygonDrawer(gl, program, hexagon_vertices, colors_1, 70, [0, 0.01, 0.01], gl.TRIANGLE_FAN);
+            //var body2 = new rotatePolygonDrawer(gl, program, vertices_2, colors_2, 70, [0, 0.01, 0.01], gl.TRIANGLE_STRIP);
+
+            function draw(timestamp) {
+
+                gl.clear(gl.COLOR_BUFFER_BIT);
+                body.draw();
+                //hex.draw();
+                //body2.draw();
+                requestAnimationFrame(draw);
+            }
+            requestAnimationFrame(draw);
+        }
+
+    </script>
+
+    <style>
+        #glCanvas {
+            width: 90vw;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div style="text-align: center; margin-top: 60px;">
+        <canvas id="glCanvas" width="1280" height="720"></canvas>
+    </div>
+</body>
+
+</html>

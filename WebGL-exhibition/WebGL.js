@@ -175,12 +175,24 @@ class polygonDrawer {
 }
 
 class rotatePolygonDrawer {
-    constructor(gl, program, vertices, color, scale, rotate) {
+    constructor(gl, program, vertices, colors, indices, scale, rotate, draw_mode) {
         this.gl = gl;
         this.program = program;
-        this.vertex_num = Math.floor(vertices.length / 3);
         this.rotate = rotate;
+        this.draw_mode = draw_mode;
         this.theta = 1;
+
+        this.element_mode = true;
+        if (indices) {
+            // draw element
+            this.vertex_num = indices.length;
+
+        }
+        else {
+            //draw array
+            this.element_mode = false;
+            this.vertex_num = Math.floor(vertices.length / 3);
+        }
 
         // use this program to render
         this.gl.useProgram(this.program);
@@ -207,12 +219,12 @@ class rotatePolygonDrawer {
         gl.uniformMatrix4fv(uCamera_location, false, camera);
 
 
-        // ===== set up vertex dots
+        // ===== set up vertex buffer
 
         // create new buffer
-        let vert_buffer = gl.createBuffer();
+        this.vert_buffer = gl.createBuffer();
         // bind buffer to gl
-        gl.bindBuffer(gl.ARRAY_BUFFER, vert_buffer);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.vert_buffer);
         // pass the list of positions into the buffer
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
         // === get the location of aVertex3DPosition in shader
@@ -231,11 +243,11 @@ class rotatePolygonDrawer {
         // ===== set up color buffer
 
         // create new buffer
-        let color_buffer = gl.createBuffer();
+        this.color_buffer = gl.createBuffer();
         // bind buffer to gl
-        gl.bindBuffer(gl.ARRAY_BUFFER, color_buffer);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.color_buffer);
         // pass the list of positions into the buffer
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color), gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
         // === get the location of aVertexColor in shader
         const aVertexColor_location = gl.getAttribLocation(program, "aVertexColor");
         //
@@ -249,12 +261,32 @@ class rotatePolygonDrawer {
         );
         gl.enableVertexAttribArray(aVertexColor_location);
 
+        // ===== set up index buffer
+        if (this.element_mode) {
+            // create new buffer
+            this.index_buffer = gl.createBuffer();
+            // bind buffer to gl
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.index_buffer);
+            // pass the list of positions into the buffer
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+        }
         // =====
 
         console.log("🆗new rotatePolygonDrawer");
     }
 
     draw() {
+        this.gl.useProgram(this.program);
+
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vert_buffer);
+        const aVertex3DPosition_location = this.gl.getAttribLocation(this.program, "aVertex3DPosition");
+        this.gl.vertexAttribPointer(aVertex3DPosition_location, 3, this.gl.FLOAT, false, 0, 0);
+        //this.gl.enableVertexAttribArray(aVertex3DPosition_location);
+
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.color_buffer);
+        const aVertexColor_location = this.gl.getAttribLocation(this.program, "aVertexColor");
+        this.gl.vertexAttribPointer(aVertexColor_location, 4, this.gl.FLOAT, false, 0, 0);
+        //this.gl.enableVertexAttribArray(aVertexColor_location);
 
         // === define rotate mtx
         var rotate_matrix = mat4.create();
@@ -268,10 +300,11 @@ class rotatePolygonDrawer {
         // update theta
         this.theta += 1;
 
-        // draw array
-        // parameter : (drawing_mode), (offset from the start of array), (num of vertex)
-        this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, this.vertex_num);
-        //this.gl.drawElements(this.gl.TRIANGLE_STRIP, Math.floor(vertices.length / 3), type, 0);
+        // draw elements
+        if (this.element_mode)
+            this.gl.drawElements(this.draw_mode, this.vertex_num, this.gl.UNSIGNED_SHORT, 0);
+        else
+            this.gl.drawArrays(this.draw_mode, 0, this.vertex_num);
 
         // delete the buffer
         //this.gl.deleteBuffer(vert_buffer);

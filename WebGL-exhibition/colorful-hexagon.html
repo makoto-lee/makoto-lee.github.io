@@ -29,43 +29,6 @@
                 0.5, -0.866, 0,
             ];
 
-            const cube_vertices = [
-                // Front face
-                -1.0, -1.0, 1.0,
-                1.0, -1.0, 1.0,
-                1.0, 1.0, 1.0,
-                -1.0, 1.0, 1.0,
-
-                // Back face
-                -1.0, -1.0, -1.0,
-                -1.0, 1.0, -1.0,
-                1.0, 1.0, -1.0,
-                1.0, -1.0, -1.0,
-
-                // Top face
-                -1.0, 1.0, -1.0,
-                -1.0, 1.0, 1.0,
-                1.0, 1.0, 1.0,
-                1.0, 1.0, -1.0,
-
-                // Bottom face
-                -1.0, -1.0, -1.0,
-                1.0, -1.0, -1.0,
-                1.0, -1.0, 1.0,
-                -1.0, -1.0, 1.0,
-
-                // Right face
-                1.0, -1.0, -1.0,
-                1.0, 1.0, -1.0,
-                1.0, 1.0, 1.0,
-                1.0, -1.0, 1.0,
-
-                // Left face
-                -1.0, -1.0, -1.0,
-                -1.0, -1.0, 1.0,
-                -1.0, 1.0, 1.0,
-                -1.0, 1.0, -1.0,
-            ];
 
             const colors = [
                 1.0, 0.0, 0.0, 1.0,    // red
@@ -78,7 +41,7 @@
             ];
 
 
-            var rpd = new rotatePolygonDrawer(gl, program, hexagon_vertices, colors, 70, [0, 0.01, 0.01]);
+            var rpd = new rotatePolygonDrawer(gl, program, hexagon_vertices, colors, false, 70, [0, 0.01, 0.01], gl.TRIANGLE_FAN);
 
             function draw(timestamp) {
 
