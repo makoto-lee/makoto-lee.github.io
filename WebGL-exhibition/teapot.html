@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- import my WebGL scripts -->
+    <script src="WebGL.js"></script>
+    <!-- import shader source scripts -->
+    <script src="shader_source.js"></script>
+    <!-- import something special -->
+    <script src="css_font_style.js"></script>
+    <!-- import obj reader  -->
+    <script src="simple_obj_loader.js"></script>
+    <!-- import gl-matrix -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.3.2/gl-matrix-min.js"></script>
+
+    <script>
+        window.onload = function () {
+            // happy opening
+            console.log("%cALL CODES RUNS HAPPY (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧", happy_css);
+
+            let gl = initializeWebGL("glCanvas");
+            let program = initializeShader(gl, vs_rotate_source, fs_colorful_source);
+
+            
+            let teapot = OBJReader.readLocalFile("teapot.obj");
+
+            const colors = [
+                1.0, 1.0, 1.0, 1.0, //white
+            ];
+
+            let rpd = new RotatePolygonDrawer(gl, program, teapot.vertices, colors, teapot.faces, 70, [0.01, 0.01, 0], gl.TRIANGLES);
+
+            function draw(timestamp) {
+
+                gl.clear(gl.COLOR_BUFFER_BIT);
+                rpd.draw();
+                requestAnimationFrame(draw);
+            }
+            requestAnimationFrame(draw);
+        }
+
+    </script>
+
+    <style>
+        #glCanvas {
+            width: 90vw;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div style="text-align: center; margin-top: 60px;">
+        <canvas id="glCanvas" width="1280" height="720"></canvas>
+    </div>
+</body>
+
+</html>
