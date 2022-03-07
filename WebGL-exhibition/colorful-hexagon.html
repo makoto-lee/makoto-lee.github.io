@@ -17,8 +17,8 @@
             // happy opening
             console.log("%cALL CODES RUNS HAPPY (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧", happy_css);
 
-            var gl = initializeWebGL("glCanvas");
-            var program = initializeShader(gl, vs_rotate_source, fs_colorful_source);
+            let gl = initializeWebGL("glCanvas");
+            let program = initializeShader(gl, vs_rotate_source, fs_colorful_source);
 
             const hexagon_vertices = [
                 1, 0, 0,
@@ -41,7 +41,7 @@
             ];
 
 
-            var rpd = new rotatePolygonDrawer(gl, program, hexagon_vertices, colors, false, 70, [0, 0.01, 0.01], gl.TRIANGLE_FAN);
+            let rpd = new RotatePolygonDrawer(gl, program, hexagon_vertices, colors, false, 70, [0, 0.01, 0.01], gl.TRIANGLE_FAN);
 
             function draw(timestamp) {
 

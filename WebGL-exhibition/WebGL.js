@@ -24,8 +24,8 @@ function initializeWebGL(canvas_name) {
 function initializeShader(gl, vs_source, fs_source) {
 
     // new shaders
-    var vert_shader = gl.createShader(gl.VERTEX_SHADER);
-    var frag_shader = gl.createShader(gl.FRAGMENT_SHADER);
+    let vert_shader = gl.createShader(gl.VERTEX_SHADER);
+    let frag_shader = gl.createShader(gl.FRAGMENT_SHADER);
 
     gl.shaderSource(vert_shader, vs_source);
     gl.shaderSource(frag_shader, fs_source);
@@ -34,7 +34,7 @@ function initializeShader(gl, vs_source, fs_source) {
     gl.compileShader(vert_shader);
     gl.compileShader(frag_shader);
 
-    var error = false;
+    let error = false;
 
     if (!gl.getShaderParameter(vert_shader, gl.COMPILE_STATUS)) {
         console.log("%c" + "⛔failed to compile vertex shader : " + gl.getShaderInfoLog(vert_shader), "color:red");
@@ -47,7 +47,7 @@ function initializeShader(gl, vs_source, fs_source) {
     }
 
     // create programe consisting these shaders
-    var program = gl.createProgram();
+    let program = gl.createProgram();
 
     // attach shaders to the program
     gl.attachShader(program, vert_shader);
@@ -115,12 +115,12 @@ function drawPolygon(gl, vertices, program, scale) {
 }
 
 function v(x, y, z) {
-    var v = vec3.create();
+    let v = vec3.create();
     vec3.set(v, x, y, z);
     return v;
 }
 
-class polygonDrawer {
+class PolygonDrawer {
     constructor(gl, program, scale) {
         this.gl = gl;
         this.program = program;
@@ -174,7 +174,7 @@ class polygonDrawer {
     }
 }
 
-class rotatePolygonDrawer {
+class RotatePolygonDrawer {
     constructor(gl, program, vertices, colors, indices, scale, rotate, draw_mode) {
         this.gl = gl;
         this.program = program;
@@ -200,7 +200,7 @@ class rotatePolygonDrawer {
         // ===== set up perspective mtx
 
         // === define perspective        
-        var perspective_matrix = mat4.create();
+        let perspective_matrix = mat4.create();
         mat4.perspective(perspective_matrix, 1, gl.viewportWidth / gl.viewportHeight, 40, 1);
         // get the location of uPerspectiveMatrix in shader
         const uPerspectiveMatrix_location = gl.getUniformLocation(program, "uPerspectiveMatrix");
@@ -210,7 +210,7 @@ class rotatePolygonDrawer {
         // ===== set up camera mtx
 
         // === define camera
-        var camera = mat4.create();
+        let camera = mat4.create();
         // parameters : (output mtx), (eye, Position of the viewer), (Point the viewer is looking at), (pointing up)
         mat4.lookAt(camera, v(0, 0, 10), v(0, 0, 0), v(0, 1, 0));
         // get the location of uCamera in shader
@@ -289,7 +289,7 @@ class rotatePolygonDrawer {
         //this.gl.enableVertexAttribArray(aVertexColor_location);
 
         // === define rotate mtx
-        var rotate_matrix = mat4.create();
+        let rotate_matrix = mat4.create();
         mat4.rotateX(rotate_matrix, rotate_matrix, this.rotate[0] * this.theta);
         mat4.rotateY(rotate_matrix, rotate_matrix, this.rotate[1] * this.theta);
         mat4.rotateZ(rotate_matrix, rotate_matrix, this.rotate[2] * this.theta);
