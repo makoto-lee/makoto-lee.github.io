@@ -19,7 +19,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 /**
  * set up background
  */
-const background = new THREE.TextureLoader().load("./stone_brick_wall/textures/stone_brick_wall_001_diff_4k.jpg");
+const background = new THREE.TextureLoader().load("./peko.jpg");
 scene.background = background;
 
 /**
