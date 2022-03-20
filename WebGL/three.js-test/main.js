@@ -57,9 +57,8 @@ loader.load("./WetFloorSign/WetFloorSign_01_1k.gltf",
 //camera.position.z = 5;
 //camera.position.y = 0;
 
-let oc = new OrbitCamera(camera, new THREE.Vector3(0, 0, 0), 5, canvas);
+let oc = new OrbitCamera(camera, new THREE.Vector3(0, 0, 0), 4, canvas);
 oc.auto_move = false;
-
 
 /**
  * start rendering
