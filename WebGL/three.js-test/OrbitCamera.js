@@ -10,7 +10,7 @@ export class OrbitCamera {
     #theta = 0;
     #phi = 0;
     #toRadian = Math.PI / 180;
-    #friction_coef = 0.9;
+    #friction_coef = 0.95;
 
     constructor(camera, lookat, radius, canvas = null, dragable = true, auto_move = true) {
         this.camera = camera;
