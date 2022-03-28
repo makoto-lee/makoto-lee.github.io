@@ -23,7 +23,7 @@ export class FirstPersonController extends FirstPersonViewer {
         // this represent current moving direct
         this._move_dir = new THREE.Vector3(0, 0, 0);
         // the shift vector from box to camera
-        this._camera_shift = new THREE.Vector3(0, 0, 0);
+        this._camera_shift = new THREE.Vector3(0, 1, 0);
         // create player's box
         this.box = new HitBox(mesh);
 
