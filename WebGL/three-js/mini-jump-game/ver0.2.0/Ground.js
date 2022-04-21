@@ -1,6 +1,6 @@
 import * as THREE from "https://cdn.skypack.dev/three@0.132.2";
 import { HitBox } from "./HitBox.js";
-import { InteractObj } from "./interact_obj.js";
+import { InteractObj } from "./InteractObj.js";
 
 export class Ground extends InteractObj {
 
