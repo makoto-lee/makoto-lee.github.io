@@ -283,11 +283,20 @@ function animate() {
         target_p.innerText = intersects[0].object.name;
     }
 
-
-    wd.update();
+    //wd.update();
 
     cube.rotation.y += 0.002;
     cube.rotation.z += 0.002;
     renderer.render(scene, camera);
 };
 animate();
+
+/**
+ * start gaming control
+ */
+window.setInterval(() => {
+    //fpc.update();
+    //fpc.move();
+    wd.update();
+},
+    13);
