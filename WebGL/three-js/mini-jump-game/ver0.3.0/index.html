@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>mini jump game :3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <script type="module" src="./main.js"></script>
+
+    <style>
+        /* to remove the top and left whitespace */
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* just to be sure these are full screen*/
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            /* To remove the scrollbars */
+            overflow: hidden;
+        }
+
+
+        .align_left_top {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        #ui_canvas {
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        #render_canvas {
+            z-index: 0;
+        }
+
+        #bulletin_board {
+            z-index: 2;
+            background-color: aqua;
+        }
+    </style>
+</head>
+
+
+<body>
+    <p id="bulletin_board" class="align_left_top"></p>
+
+    <canvas id="ui_canvas" class="align_left_top"></canvas>
+    <canvas id="render_canvas" class="align_left_top"></canvas>
+</body>
+
+</html>
