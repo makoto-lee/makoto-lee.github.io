@@ -18,6 +18,7 @@ let b_manager = null;
 
 let s_manager = null;
 
+let w_manager = null;
 // ==
 
 let lowering_speed = 0.03;

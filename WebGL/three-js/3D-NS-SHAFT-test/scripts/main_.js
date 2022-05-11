@@ -8,6 +8,7 @@ import { World } from "./World.js";
 import { game_end } from "./game_ui_funtions.js";
 import { BlockManager } from "./BlockManager.js";
 import { StateManager } from "./StateManager.js";
+import { WallManager } from "./WallManager.js";
 import { Ceiling } from "./Ceiling.js";
 
 
@@ -208,26 +209,25 @@ function main() {
         models.wall.texture.repeat.set(7, 5);
 
         models.wall.geometry = new THREE.CylinderGeometry(20, 20, 80, 32);
-        models.wall.material = new THREE.MeshPhongMaterial({
-            map: models.wall.texture,
-            normalMap: models.wall.normal_map,
-            side: THREE.BackSide,
-        });
+        models.wall.material = [
+            new THREE.MeshPhongMaterial({ map: models.wall.texture, side: THREE.BackSide }),
+            new THREE.MeshPhongMaterial({ color: 0x000000, opacity: 0, transparent: true }),
+            new THREE.MeshPhongMaterial({ color: 0x000000, opacity: 0, transparent: true })
+        ];
         models.wall.mesh = new THREE.Mesh(models.wall.geometry, models.wall.material);
         models.wall.mesh.receiveShadow = true;
         models.wall.mesh.castShadow = true;
         models.wall.mesh.wireframe = true;
         models.wall.mesh.renderOrder = 0;
 
-        models.wall.mesh.position.set(0, 0, 0);
-        scene.add(models.wall.mesh);
+        w_manager = new WallManager(scene, fpc, models.wall.mesh);
 
         /**
          * setup spike
          */
         models.spike.mesh.material = new THREE.MeshPhongMaterial({
             map: models.spike.texture,
-            normalMap: models.spike.normal_map
+            //normalMap: models.spike.normal_map
         });
 
         models.spike.mesh.scale.set(4, 4, 4);
@@ -293,7 +293,6 @@ function main() {
         // ==============================
 
         //show the title
-        console.log("helper");
         document.getElementById("loading").style.visibility = "hidden";
         document.getElementById("title").style.visibility = "visible";
 
@@ -315,34 +314,53 @@ function main() {
         * start gaming control
         */
         const health_bar_elem = document.getElementById("health_bar");
+        const depth_num_elem = document.getElementById("depth_num");
 
-        window.setInterval(() => {
-            if (game_running == true) {
-                //console.log(fpc.box.position);
-                wd.update();
+        window.setInterval(
+            () => {
+                if (game_running == true) {
 
-                // player state check
-                if (s_manager.state.health <= 0) {
-                    game_end();
+                    console.log("curr height:", fpc.box.position.y);
+
+                    wd.update();
+
+                    // lower ceiling
+                    ceiling.moveY(-lowering_speed);
+
+                    // lower dot light
+                    dot_light.position.y += -lowering_speed;
+
+                    // refresh blocks
+                    b_manager.update();
+
+                    // player state update
+                    s_manager.update();
+
+                    // update health bar
+                    health_bar_elem.style.width = `${s_manager.state.health / s_manager.state.max_health * 100}%`;
+
+                    // update depth
+                    depth_num_elem.innerText = `${(fpc.box.position.y * (-1) / 4) | 0}`
+
+                    // player state check
+                    if (s_manager.state.health <= 0) {
+                        game_end();
+                    }
                 }
-
-                // refresh blocks
-                b_manager.update();
-
-                // lower ceiling
-                ceiling.moveY(-lowering_speed);
-
-                // lower dot light
-                dot_light.position.y += -lowering_speed;
-
-                // player state update
-                s_manager.update();
-
-                // update health bar
-                health_bar_elem.style.width = `${s_manager.state.health / s_manager.state.max_health * 100}%`;
-            }
-        },
+            },
             13);// 60hz
+
+        // update scene that doesn't need update so frequently
+        window.setInterval(
+            () => {
+                if (game_running == true) {
+
+                    // wall update
+                    w_manager.update();
+
+                }
+            },
+            1);//1 hz
     }
 };
 

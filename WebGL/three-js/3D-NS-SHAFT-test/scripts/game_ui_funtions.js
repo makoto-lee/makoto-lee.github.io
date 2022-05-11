@@ -6,10 +6,15 @@ export function game_start() {
     let health_div = document.getElementById("health");
     health_div.style.visibility = "visible";
 
-    // ================================================
-    // set objects position
+    // show depth
+    let depth_div = document.getElementById("depth");
+    depth_div.style.visibility = "visible";
+
+    // ============= set objects position ==============
+    // light
     dot_light.position.set(0, 15, 0);
 
+    // block
     b_manager.resume();
     b_manager.nextBlock();
     b_manager.nextBlock();
@@ -17,12 +22,17 @@ export function game_start() {
     b_manager.nextBlock();
     b_manager.nextBlock();
 
+    // state
     s_manager.state.health = s_manager.state.max_health;
 
+    // ceiling
     ceiling.resume();
 
-    // ================================================
+    // wall
+    w_manager.resume();
 
+    // ================================================
+    // place the player
     let x = b_manager.world.ground_list[2].mesh.position.x;
     let y = b_manager.world.ground_list[2].mesh.position.y;
     let z = b_manager.world.ground_list[2].mesh.position.z;

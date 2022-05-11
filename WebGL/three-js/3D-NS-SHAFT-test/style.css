@@ -27,6 +27,12 @@ body {
     transform: translate(-50%, -50%);
 }
 
+.align_center_top {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+
 #progress {
     width: 35vw;
     height: 2.4vw;
@@ -76,6 +82,32 @@ body {
     height: 100%;
     border-radius: 5px;
     background-color: rgb(190, 0, 0);
+}
+
+#depth {
+    margin-top: 6px;
+
+    box-shadow: 0px 0.5px 2px 5px rgb(128, 128, 128);
+
+    border-radius: 7px;
+    border-width: 5px;
+    border-color: black;
+    border-style: solid;
+    background-color: rgb(255, 255, 255);
+
+    font-family: "Comic Sans MS";
+    font-size: large;
+    font-weight: 600;
+}
+
+#depth_num {
+
+    display: inline;
+    margin-right: 5px;
+
+    font-family: "Comic Sans MS";
+    font-size: large;
+    font-weight: 600;
 }
 
 .box {
