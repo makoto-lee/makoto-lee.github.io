@@ -7,7 +7,7 @@ export class StateManager {
     constructor(player, ceiling) {
         this.player = player;
         this.ceiling = ceiling;
-        this.live_range = 20;
+        this.live_range = 25;
 
         this.player_height = player.box.edge_length.y;
 

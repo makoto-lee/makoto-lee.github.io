@@ -23,9 +23,13 @@ export function game_start() {
 
     // ================================================
 
-    fpc.setPosition(0, 10, 0);
+    let x = b_manager.world.ground_list[2].mesh.position.x;
+    let y = b_manager.world.ground_list[2].mesh.position.y;
+    let z = b_manager.world.ground_list[2].mesh.position.z;
+
+    fpc.setPosition(x + 0.5, y + 2, z + 0.5);
     fpc.box.velocity.y = 0;
-    
+
     fpc._forwarding = false;
     fpc._backwarding = false;
     fpc._lefting = false;

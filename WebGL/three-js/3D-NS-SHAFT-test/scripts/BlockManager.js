@@ -12,7 +12,7 @@ export class BlockManager {
      * @param {Number} ceiling_height the height of ceiling in staring
      * @param {Number} block_interval the interval of height of each block
      */
-    constructor(world, block_dict, move_interval = 0.02, ceiling_height = 15, block_interval = 4) {
+    constructor(world, block_dict, move_interval = 0.02, ceiling_height = 10, block_interval = 4) {
         this.world = world;
         this.block_dict = block_dict;
         this.move_interval = move_interval;
@@ -20,7 +20,7 @@ export class BlockManager {
         this.curr_ceiling_height = ceiling_height;
         this.block_interval = block_interval;
 
-        this.bottom_height = 0;
+        this.curr_bottom_height = this.ceiling_height;
         this.block_idx = 0;
         // the lower the it's index is the block is higher
 
@@ -31,11 +31,11 @@ export class BlockManager {
         this.block_dict.concrete.setName(`block_${this.block_idx}`);
         this.block_idx += 1;
 
-        let x_tmp = getRandomFloat(-5, 5);
-        let z_tmp = getRandomFloat(-5, 5);
-        this.block_dict.concrete.setPosition(x_tmp, this.bottom_height, z_tmp);
+        let x_tmp = getRandomFloat(-8, 8);
+        let z_tmp = getRandomFloat(-8, 8);
+        this.block_dict.concrete.setPosition(x_tmp, this.curr_bottom_height, z_tmp);
 
-        this.bottom_height -= this.block_interval;
+        this.curr_bottom_height -= this.block_interval;
 
         // add block
         this.world.addGround(this.block_dict.concrete);
@@ -89,8 +89,7 @@ export class BlockManager {
             this.world.scene.remove(selected);
         }
         this.world.ground_list = [];
-        console.log("world.ground_list.length", this.world.ground_list.length);
 
-        this.bottom_height = 0;
+        this.curr_bottom_height = this.ceiling_height;
     }
 }

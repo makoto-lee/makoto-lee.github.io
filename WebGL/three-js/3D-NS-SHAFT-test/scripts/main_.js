@@ -33,8 +33,8 @@ function main() {
     };
     models["spike"] = {
         gltf_url: './material/Spike_trap/scene.gltf',
-        texture_url: './material/Spike_trap/textures/OPM0041_baseColor.png',
-        normal_map_url: './material/Spike_trap/textures/OPM0041_normal.png'
+        texture_url: './material/Spike_trap/textures/OPM0041_baseColor_s.png',
+        //normal_map_url: './material/Spike_trap/textures/OPM0041_normal.png'
     }
 
 
@@ -238,7 +238,7 @@ function main() {
         models.spike.mesh.wireframe = true;
         models.spike.mesh.renderOrder = 0;
 
-        models.spike.mesh.position.set(-15.6, 15, -15.6);
+        models.spike.mesh.position.set(-15.6, 10, -15.6);
 
         ceiling = new Ceiling(scene, models.spike.mesh, 13, 13, 2.4, 2.4);
 
@@ -266,7 +266,7 @@ function main() {
          */
         //spot_light.castShadow = true;
 
-        dot_light = new THREE.PointLight(0xffffff, 1, 30);
+        dot_light = new THREE.PointLight(0xffffff, 1, 25);
         scene.add(dot_light);
 
         //let spotLightHelper = new THREE.SpotLightHelper(spot_light);
@@ -283,7 +283,7 @@ function main() {
             concrete: models.concrete_block.ground
         };
 
-        b_manager = new BlockManager(wd, block_dict, 0.02, 15, 4);
+        b_manager = new BlockManager(wd, block_dict, lowering_speed, 10, 4);
 
         /**
          * setup StateManager
@@ -330,10 +330,10 @@ function main() {
                 b_manager.update();
 
                 // lower ceiling
-                ceiling.moveY(-0.02);
+                ceiling.moveY(-lowering_speed);
 
                 // lower dot light
-                dot_light.position.y += -0.02;
+                dot_light.position.y += -lowering_speed;
 
                 // player state update
                 s_manager.update();

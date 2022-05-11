@@ -23,7 +23,7 @@ export class Ground extends InteractObj {
 
         // hitbox
         const box_geometry = new THREE.BoxGeometry(L, W, H);
-        const box_material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        const box_material = new THREE.MeshBasicMaterial({ color: 0x00ff00, opacity: 0, transparent: true });
 
         this.box = new THREE.Mesh(box_geometry, box_material);
         this.box.position.copy(this.mesh.position);
