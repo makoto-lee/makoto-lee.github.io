@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>3d 下樓梯 :3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <script src="./scripts/game_variables.js"></script>
+    <script type="module" src="./scripts/main_.js"></script>
+    <script type="module" src="./scripts/game_ui_funtions.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+    <p id="bulletin_board" class="align_left_top"></p>
+
+    <canvas id="ui_canvas" class="align_left_top"></canvas>
+    <canvas id="render_canvas" class="align_left_top"></canvas>
+
+    <!--loading bar-->
+    <div id="loading" class="align_center">
+
+        <img src="./material/pictures/nyancat.png" id="progress">
+        <div id="progress_bar"></div>
+
+    </div>
+
+    <!--health bar-->
+    <div id="health" class="align_left_top" style="visibility :hidden">
+        <div id="health_bar"> </div>
+    </div>
+
+    <!--depth title-->
+    <div id="depth" class="align_center_top" style="visibility :hidden">
+        <p style="margin-left: 5px ; display: inline ;">under ground :</p>
+        <p id="depth_num"> 0 </p>
+    </div>
+
+    <!--title options-->
+    <div id="title" class="align_center" style="visibility :hidden">
+
+        <div class="box">
+            <p>3d down stair</p>
+        </div>
+
+        <div class="box">
+            <button id="start_button">start</button>
+        </div>
+    </div>
+
+    <!--end scene-->
+    <div id="you_dead" class="align_center" style="visibility :hidden">
+        <div class="box">
+            <p>you dead QQ</p>
+        </div>
+
+        <div class="box">
+            <button id="continue_button">continue</button>
+        </div>
+    </div>
+
+    <!--version tag-->
+    <div id="version" class="align_right_bottom">
+        <p>ver1.0.0</p>
+    </div>
+
+
+</body>
+
+</html>
