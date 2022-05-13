@@ -57,6 +57,9 @@ function main() {
     audios["bgm"] = {
         audio_url: './material/audios/bgm.mp3'
     }
+    audios["damaged"] = {
+        audio_url: './material/audios/oof_hurt.mp3'
+    }
 
 
     {
@@ -214,7 +217,7 @@ function main() {
         /**
          * setup World
          */
-        const wd = new World(scene, 0.01);
+        const wd = new World(scene, 0.009);
 
         {
             /*
@@ -353,7 +356,7 @@ function main() {
         /**
          * setup StateManager
          */
-        s_manager = new StateManager(fpc, ceiling);
+        s_manager = new StateManager(fpc, ceiling, a_manager);
 
         // ==============================
 
@@ -396,8 +399,9 @@ function main() {
                     in_air_after = fpc._in_air;
 
                     // landing check
-                    if (in_air_before && !in_air_after)
-                        audios.landing.sound.play();
+                    if (in_air_before && !in_air_after) {
+                        a_manager.play("landing");
+                    }
 
                     // lower ceiling
                     ceiling.moveY(-lowering_speed);

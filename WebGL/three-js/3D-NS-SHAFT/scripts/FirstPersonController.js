@@ -29,8 +29,8 @@ export class FirstPersonController extends FirstPersonViewer {
         this.box = new HitBox(mesh);
 
         this.movespeed = {
-            forward: 0.07,
-            backward: 0.04
+            forward: 0.08,
+            backward: 0.06
         }
 
 

@@ -57,7 +57,7 @@ export class BlockManager {
 
         if (pick_block && pick_block.mesh.position.y > this.curr_ceiling_height) {
 
-            console.log("removed a block 0.0");
+            //console.log("removed a block 0.0");
 
             // remove the block
             this.world.removeGround(pick_block.mesh.name);

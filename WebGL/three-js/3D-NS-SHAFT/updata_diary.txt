@@ -1,0 +1,11 @@
+ver 1.1.0
+
+* Add damaged sound.
+
+* Adjust gravity, player speed to make it more playable.
+
+// ============================
+
+ver1.0.0 (2022/5/12)
+
+Almost every elements were done.
