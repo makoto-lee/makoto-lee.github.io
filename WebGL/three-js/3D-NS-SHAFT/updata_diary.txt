@@ -1,10 +1,20 @@
-ver 1.1.0
+ver 1.2.0 (//)
+
+* Redesign UI
+
+* Add the HOW TO PLAY
+
+* Add the ABOUT
+
+ =======================
+
+ver 1.1.0 (2022/5/13)
 
 * Add damaged sound.
 
 * Adjust gravity, player speed to make it more playable.
 
-// ============================
+ =======================
 
 ver1.0.0 (2022/5/12)
 

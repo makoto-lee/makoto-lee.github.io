@@ -1,0 +1,58 @@
+@import url("https://fonts.googleapis.com/css?  family=Lora:400,400i,700,700i");
+
+#title_text #ns-shaft {
+    font-family: Lora;
+    letter-spacing: 10px;
+    stroke: #ff3fac;
+    font-size: 40px;
+    font-weight: 700;
+    stroke-width: 3;
+
+    animation: textAnimate_1 5s infinite alternate;
+
+}
+
+@keyframes textAnimate_1 {
+    0% {
+        stroke-dasharray: 0 50%;
+        stroke-dashoffset: 20%;
+        fill: hsl(16, 100%, 29%)
+    }
+
+    100% {
+        stroke-dasharray: 50% 0;
+        stroke-dashoffstet: -20%;
+        fill: rgba(255, 154, 82, 0)
+    }
+
+}
+
+#title_text #ddd {
+    font-family: Lora;
+    letter-spacing: 10px;
+    stroke: #b8b8b8;
+    font-size: 40px;
+    font-weight: 700;
+    fill: #ffffff00;
+    stroke-width: 3;
+
+    animation: textAnimate_2 5s infinite linear;
+}
+
+@keyframes textAnimate_2 {
+    0% {
+        stroke-dasharray: 10, 4;
+        stroke-dashoffset: 0;
+    }
+
+    50% {
+        stroke-dasharray: 10, 4;
+        stroke-dashoffset: 50;
+    }
+
+    100% {
+        stroke-dasharray: 10, 4;
+        stroke-dashoffset: 100;
+    }
+
+}

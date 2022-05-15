@@ -9,7 +9,10 @@
     <script type="module" src="./scripts/main_.js"></script>
     <script type="module" src="./scripts/game_ui_funtions.js"></script>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/text_style.css">
+    <link rel="stylesheet" href="./css/class_style.css">
+    <link rel="stylesheet" href="./css/id_style.css">
 </head>
 
 
@@ -27,6 +30,12 @@
 
     </div>
 
+    <!--Three.js logo-->
+    <div id="three_js">
+        made with
+        <img src="./material/pictures/three_logo.png" id="three_logo">
+    </div>
+
     <!--health bar-->
     <div id="health" class="align_left_top" style="visibility :hidden">
         <div id="health_bar"> </div>
@@ -42,28 +51,57 @@
     <div id="title" class="align_center" style="visibility :hidden">
 
         <div class="box">
-            <p>3d down stair</p>
+            <svg id="title_text">
+                <text id="ns-shaft" x="50%" y="50%" text-anchor="middle">NS-SHAFT</text>
+                <text id="ddd" x="50%" y="80%" text-anchor="middle">3D</text>
+            </svg>
         </div>
 
         <div class="box">
-            <button id="start_button">start</button>
+            <div id="start_button" class="btn">START</div>
         </div>
+
+        <div class="box">
+            <div id="how_to_play_button" class="btn">HOW TO PLAY</div>
+        </div>
+
+        <div class="box">
+            <div id="more_button" class="btn">ABOUT</div>
+        </div>
+    </div>
+
+    <!--more-->
+    <div id="more" class="align_center">
+
+        <div id="more_content" class="box"> </div>
+
+        <div id="more_right">
+            <div>
+                <img id="more_close" src="./material/pictures/close-icon.png">
+            </div>
+
+            <div id="more_links">
+
+            </div>
+        </div>
+
+
     </div>
 
     <!--end scene-->
     <div id="you_dead" class="align_center" style="visibility :hidden">
         <div class="box">
-            <p>you dead QQ</p>
+            <p style="color: white; font-size: 35px;">YOU DIED</p>
         </div>
 
         <div class="box">
-            <button id="continue_button">continue</button>
+            <div id="continue_button" class="btn">CONTINUE</div>
         </div>
     </div>
 
     <!--version tag-->
     <div id="version" class="align_right_bottom">
-        <p>ver1.1.0</p>
+        <p>ver1.2.0</p>
     </div>
 
 

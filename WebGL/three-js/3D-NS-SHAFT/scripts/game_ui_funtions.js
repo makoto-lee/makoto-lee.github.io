@@ -1,13 +1,26 @@
 import { FirstPersonController } from "./FirstPersonController.js";
 
+const health_div = document.getElementById("health");
+const depth_div = document.getElementById("depth");
+const you_dead_div = document.getElementById("you_dead");
+const title_div = document.getElementById("title");
+const start_button = document.getElementById("start_button");
+const continue_button = document.getElementById("continue_button");
+// ==
+const how_to_play_button = document.getElementById("how_to_play_button");
+// ==
+const more_button = document.getElementById("more_button");
+const more_div = document.getElementById("more");
+const more_content_div = document.getElementById("more_content");
+const close_more_button = document.getElementById("more_close");
+
+
 export function game_start() {
 
     // show health bar    
-    let health_div = document.getElementById("health");
     health_div.style.visibility = "visible";
 
     // show depth
-    let depth_div = document.getElementById("depth");
     depth_div.style.visibility = "visible";
 
     // ============= set objects position ==============
@@ -73,9 +86,7 @@ export function game_end() {
     document.exitPointerLock();
 
     // show you_dead_div
-    let you_dead_div = document.getElementById("you_dead");
     you_dead_div.style.visibility = "visible";
-
 }
 
 function game_title_start() {
@@ -83,13 +94,10 @@ function game_title_start() {
     console.log("start !");
 
     // hide title_div
-    let title_div = document.getElementById("title");
     title_div.style.visibility = "hidden";
 
     game_start();
 }
-
-let start_button = document.getElementById("start_button");
 start_button.onclick = game_title_start;
 
 
@@ -98,19 +106,54 @@ function game_resume() {
     console.log("continue !");
 
     // hide you_dead_div
-    let you_dead_div = document.getElementById("you_dead");
     you_dead_div.style.visibility = "hidden";
 
     game_start();
 }
-
-let continue_button = document.getElementById("continue_button");
 continue_button.onclick = game_resume;
 
-// ============== test ============== 
 
-window.addEventListener('keydown',
-    (event) => {
-        if (event.key == 'k')
-            player_state.health = -999;
-    });
+async function downloadFile() {
+    let response = await fetch("./updata_diary.txt");
+
+    if (response.status != 200) {
+        throw new Error("Server Error : reading update_diary");
+    }
+
+    // read response stream as text
+    let text_data = await response.text();
+
+    return text_data;
+}
+
+function read_how_to() {
+    alert("stay alive");
+}
+how_to_play_button.onclick = read_how_to;
+
+
+function read_more() {
+
+    async function ff() {
+        try {
+            let text_data = await downloadFile();
+            more_content_div.innerText = text_data;
+        }
+        catch (e) {
+            alert(e.message);
+        }
+    }
+    ff();
+
+    more_div.style.visibility = "visible";
+    more_div.style.marginTop = "0vh";
+}
+more_button.onclick = read_more;
+
+function close_more() {
+
+    more_div.style.marginTop = "100vh";
+    more_div.style.visibility = "hidden";
+
+}
+close_more_button.onclick = close_more;

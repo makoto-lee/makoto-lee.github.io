@@ -362,6 +362,7 @@ function main() {
 
         //show the title
         document.getElementById("loading").style.visibility = "hidden";
+        document.getElementById("three_js").style.visibility = "hidden";
         document.getElementById("title").style.visibility = "visible";
 
         // play bgm
