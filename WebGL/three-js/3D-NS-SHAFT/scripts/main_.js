@@ -39,7 +39,7 @@ function main() {
     };
     models["spike"] = {
         gltf_url: './material/objects/Spike_trap/scene.gltf',
-        texture_url: './material/objects/Spike_trap/textures/OPM0041_baseColor_s.png',
+        //texture_url: './material/objects/Spike_trap/textures/OPM0041_baseColor_s.png',
         //normal_map_url: './material/Spike_trap/textures/OPM0041_normal.png'
     }
 
@@ -283,7 +283,8 @@ function main() {
          * setup spike
          */
         models.spike.mesh.material = new THREE.MeshPhongMaterial({
-            map: models.spike.texture,
+            color: "white"
+            //map: models.spike.texture,
             //normalMap: models.spike.normal_map
         });
 

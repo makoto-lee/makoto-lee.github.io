@@ -39,7 +39,5 @@ export class StateManager {
         if (this.player.box.position.y < this.ceiling.height - this.live_range) {
             this.state.health = -999;
         }
-
-        console.log(this.state.damaging);
     }
 }

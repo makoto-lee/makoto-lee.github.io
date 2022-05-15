@@ -2,18 +2,19 @@ import { FirstPersonController } from "./FirstPersonController.js";
 
 const health_div = document.getElementById("health");
 const depth_div = document.getElementById("depth");
-const you_dead_div = document.getElementById("you_dead");
+// ==
 const title_div = document.getElementById("title");
 const start_button = document.getElementById("start_button");
-const continue_button = document.getElementById("continue_button");
-// ==
 const how_to_play_button = document.getElementById("how_to_play_button");
 // ==
 const more_button = document.getElementById("more_button");
 const more_div = document.getElementById("more");
 const more_content_div = document.getElementById("more_content");
 const close_more_button = document.getElementById("more_close");
-
+// ==
+const you_dead_div = document.getElementById("you_dead");
+const continue_button = document.getElementById("continue_button");
+const back_to_title_button = document.getElementById("back_to_title_button");
 
 export function game_start() {
 
@@ -157,3 +158,11 @@ function close_more() {
 
 }
 close_more_button.onclick = close_more;
+
+function back_to_title() {
+    you_dead_div.style.visibility = "hidden";
+    health_div.style.visibility = "hidden";
+    depth_div.style.visibility = "hidden";
+    title_div.style.visibility = "visible";
+}
+back_to_title_button.onclick = back_to_title;
