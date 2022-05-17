@@ -29,7 +29,7 @@ export class FirstPersonViewer {
                     let y_tmp = event.movementY;
 
                     // sometimes the event.movementX,Y may return a very big value, why?                     
-                    if (Math.abs(event.movementY) > 100 | Math.abs(event.movementX) > 100) {
+                    if (Math.abs(event.movementY) > 250 | Math.abs(event.movementX) > 250) {
                         x_tmp = 0;
                         y_tmp = 0;
                     }

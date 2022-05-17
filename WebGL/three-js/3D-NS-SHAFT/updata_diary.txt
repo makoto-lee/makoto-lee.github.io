@@ -1,3 +1,11 @@
+ver 1.2.1 (2022/5/17)
+
+* Fix UI transition
+
+* Fix camera controll smoothness
+
+ =======================
+
 ver 1.2.0 (2022/5/15)
 
 * Redesign UI
