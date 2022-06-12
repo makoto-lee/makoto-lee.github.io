@@ -1,5 +1,5 @@
 import * as THREE from "https://cdn.skypack.dev/three@0.132.2";
-import { FBXLoader } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/FBXLoader.js";
+import { BufferGeometryUtils } from 'https://cdn.jsdelivr.net/npm/three@0.125.2/examples/jsm/utils/BufferGeometryUtils.js';
 import { GLTFLoader } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/GLTFLoader.js";
 import { FirstPersonController } from "./FirstPersonController.js";
 import { FirstPersonViewer } from "./FirstPersonViewer.js"
@@ -25,6 +25,12 @@ function main() {
     const manager = new THREE.LoadingManager();
     manager.onLoad = init;
 
+    // === my_model ===
+    my_models["jump_board"] = {
+        gltf_url: './material/objects/Jump_board/jump_board.gltf',
+        texture_url: './material/objects/Jump_board/textures/baking_2.png'
+    };
+
     // === model ===
 
     models["concrete_block"] = {
@@ -39,7 +45,7 @@ function main() {
     };
     models["spike"] = {
         gltf_url: './material/objects/Spike_trap/scene.gltf',
-        //texture_url: './material/objects/Spike_trap/textures/OPM0041_baseColor_s.png',
+        texture_url: './material/objects/Spike_trap/textures/OPM0041_baseColor_s.png',
         //normal_map_url: './material/Spike_trap/textures/OPM0041_normal.png'
     }
 
@@ -51,8 +57,11 @@ function main() {
     audios["ceiling_moving"] = {
         position_audio_url: './material/audios/machine_1.wav'
     };
-    audios["landing"] = {
+    audios["concrete_landing"] = {
         audio_url: './material/audios/landing.mp3'
+    }
+    audios["jump_board_landing"] = {
+        audio_url: './material/audios/Spring-sound-effect-metal.mp3'
     }
     audios["bgm"] = {
         audio_url: './material/audios/bgm.mp3'
@@ -78,13 +87,40 @@ function main() {
                                     const m = child;
                                     m.receiveShadow = true;
                                     m.castShadow = true;
-                                    m.wireframe = true;
-                                    m.renderOrder = 0;
 
                                     m.name = `${key}`;
                                     models[key].mesh = m;
                                 }
                             });
+                        },
+                        (xhr) => { console.log(`${key} GLTF ` + (xhr.loaded / xhr.total) * 100 + '% loaded'); },
+                        (error) => { console.log(`Error happend when loading ${key} GLTF`); }
+                    );
+
+                }
+            }
+            for (const [key, model] of Object.entries(my_models)) {
+                if ("gltf_url" in model) {
+
+                    // load the gltf
+                    gltf_loader.load(my_models[key].gltf_url,
+                        (gltf) => {
+                            let geo_array = [];
+                            gltf.scene.traverse((child) => {
+                                if (child.isMesh) {
+                                    geo_array.push(child.geometry);
+                                }
+                            });
+
+                            let geo_buf = new THREE.BufferGeometry();
+                            geo_buf = BufferGeometryUtils.mergeBufferGeometries(geo_array);
+                            geo_buf.computeBoundingBox();
+                            const mm = new THREE.Mesh(geo_buf);
+
+                            mm.receiveShadow = true;
+                            mm.castShadow = true;
+                            mm.name = `${key}`;
+                            my_models[key].mesh = mm;
                         },
                         (xhr) => { console.log(`${key} GLTF ` + (xhr.loaded / xhr.total) * 100 + '% loaded'); },
                         (error) => { console.log(`Error happend when loading ${key} GLTF`); }
@@ -102,6 +138,13 @@ function main() {
 
                     // load the texture
                     texture_loader.load(model.texture_url, (t) => { models[key].texture = t; });
+                }
+            }
+            for (const [key, model] of Object.entries(my_models)) {
+                if ("texture_url" in model) {
+
+                    // load the texture
+                    texture_loader.load(model.texture_url, (t) => { my_models[key].texture = t; });
                 }
             }
         }
@@ -211,6 +254,7 @@ function main() {
         }
         const renderer = new THREE.WebGLRenderer({ canvas: render_canvas });
         renderer.setSize(render_canvas.width, render_canvas.height);
+        //renderer.shadowMap.enabled = true;
         //const axesHelper = new THREE.AxesHelper(10);
         //scene.add(axesHelper);
 
@@ -219,30 +263,6 @@ function main() {
          */
         const wd = new World(scene, 0.009);
 
-        {
-            /*
-             * setup ground
-             */
-            //models.ground.geometry = new THREE.BoxGeometry(50, 1, 50);
-
-            //models.ground.texture.wrapS = models.ground.texture.wrapT = THREE.RepeatWrapping;
-            //models.ground.texture.offset.set(0, 0);
-            //models.ground.texture.repeat.set(80, 80);
-
-            //models.ground.material = new THREE.MeshBasicMaterial({ map: models.ground.texture });
-
-            //models.ground.mesh = new THREE.Mesh(models.ground.geometry, models.ground.material);
-            //models.ground.mesh.position.set(0, 0, 0);
-            //models.ground.mesh.name = "ground";
-
-            //const main_ground = new Ground(models.ground.mesh, 50, 0.2, 50, new THREE.Vector3(0, 0.3, 0));
-            //main_ground.addEvent("collid",
-            //    () => {
-            //        //fpc.setPosition(0, 5, 0);
-            //        //fpc.box.velocity.y = 0;
-            //    });
-            //wd.addGround(main_ground);
-        }
 
         /**
          * setup player
@@ -273,28 +293,24 @@ function main() {
         ];
         models.wall.mesh = new THREE.Mesh(models.wall.geometry, models.wall.material);
         models.wall.mesh.receiveShadow = true;
-        models.wall.mesh.castShadow = true;
-        models.wall.mesh.wireframe = true;
-        models.wall.mesh.renderOrder = 0;
 
         w_manager = new WallManager(scene, fpc, models.wall.mesh);
 
         /**
          * setup spike
          */
+        models.spike.texture.flipY = false;
         models.spike.mesh.material = new THREE.MeshPhongMaterial({
-            color: "white"
-            //map: models.spike.texture,
+            color: "white",
+            map: models.spike.texture,
             //normalMap: models.spike.normal_map
         });
 
         models.spike.mesh.scale.set(4, 4, 4);
         models.spike.mesh.rotation.x = Math.PI / 2;
 
-        models.spike.mesh.receiveShadow = true;
-        models.spike.mesh.castShadow = true;
-        models.spike.mesh.wireframe = true;
-        models.spike.mesh.renderOrder = 0;
+        models.spike.mesh.receiveShadow = false;
+        models.spike.mesh.castShadow = false;
 
         models.spike.mesh.position.set(-15.6, 10, -15.6);
 
@@ -315,16 +331,33 @@ function main() {
 
         models.concrete_block.ground.addEvent("collid",
             () => {
-                //console.log("collid block");
+                console.log("collid concrete");
+                fpc.box.velocity.y = 0;
+                s_manager.state.standOn = "concrete_landing";
+
             });
 
+        /**
+         * setup jump_board
+         */
+        my_models.jump_board.texture.flipY = false;
+        my_models.jump_board.mesh.material = new THREE.MeshLambertMaterial({ map: my_models.jump_board.texture });
+
+        my_models.jump_board.ground = new Ground(my_models.jump_board.mesh, 2.9, 0.1, 5.5, new THREE.Vector3(1.9, 0.1, -0.6));
+        my_models.jump_board.ground.addEvent("collid",
+            () => {
+                console.log("collid jump_board");
+                //console.log(fpc.box.velocity.y);
+                fpc.box.velocity.y = Math.max(0.3, Math.abs(fpc.box.velocity.y * 0.7));
+                s_manager.state.standOn = "jump_board_landing";
+            });
 
         /**
          * setup lights
          */
-        //spot_light.castShadow = true;
 
-        dot_light = new THREE.PointLight(0xffffff, 1, 25);
+        dot_light = new THREE.PointLight(0xffffff, 2, 25);
+        dot_light.castShadow = true
         dot_light.add(audios["ceiling_moving"].sound);
         scene.add(dot_light);
 
@@ -348,8 +381,10 @@ function main() {
         /**
          * setup Block Manager
          */
+        // name : [ground, probability(%)]
         let block_dict = {
-            concrete: models.concrete_block.ground
+            concrete: [models.concrete_block.ground, 70],
+            jump: [my_models.jump_board.ground, 30]
         };
 
         b_manager = new BlockManager(wd, block_dict, lowering_speed, 10, 4);
@@ -402,7 +437,8 @@ function main() {
 
                     // landing check
                     if (in_air_before && !in_air_after) {
-                        a_manager.play("landing");
+                        a_manager.play(s_manager.state.standOn);
+                        console.log(s_manager.state.standOn);
                     }
 
                     // lower ceiling

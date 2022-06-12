@@ -94,15 +94,12 @@ export class World {
         for (let i = 0; i < this.ground_list.length; i++) {
 
             if (World._collision_detect(this.player.box, this.ground_list[i].hitbox)) {
-                //console.log("collid !!!!");
-                //console.log(this.ground_list[i].events_dict);
-                this.player._in_air = false;
 
                 if ("collid" in this.ground_list[i].events_dict) {
                     this.ground_list[i].events_dict["collid"]();
                 }
 
-                this.player.box.velocity.y = 0;
+                this.player._in_air = false;
             }
         }
 

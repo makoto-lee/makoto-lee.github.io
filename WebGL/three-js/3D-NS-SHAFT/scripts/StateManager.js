@@ -18,14 +18,18 @@ export class StateManager {
         this.state = {
             max_health: 1000,
             health: 1000,
-            damaging: false
+            damaging: false,
+            standOn: -1
         }
     }
 
     update() {
+        // healing by time
+        this.state.health += 0.1;
 
+        // when player is above ceiling -3 health
         if (this.player.box.position.y + this.player_height > this.ceiling.height) {
-            this.state.health -= 2;
+            this.state.health -= 3; // when player is above ceiling -3 health
             if (this.state.damaging == false) {
                 console.log("damaged >o<");
                 this.AM.play("damaged");    // play damaged sound
@@ -36,8 +40,11 @@ export class StateManager {
             this.state.damaging = false;
         }
 
+        // when fall out 
         if (this.player.box.position.y < this.ceiling.height - this.live_range) {
             this.state.health = -999;
         }
+
+        this.state.health = Math.min(this.state.health, this.state.max_health);
     }
 }

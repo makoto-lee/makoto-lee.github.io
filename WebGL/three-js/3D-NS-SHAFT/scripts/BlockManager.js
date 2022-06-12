@@ -25,20 +25,34 @@ export class BlockManager {
         // the lower the it's index is the block is higher
 
     }
+    pickBlock() {
+        // num is random int in range 0 ~ 99
+        let rand_num = Math.floor(Math.random() * 100);
+        let accu_num = 0;
+
+        for (const [key, pair] of Object.entries(this.block_dict)) {
+            accu_num += this.block_dict[key][1];
+            if (accu_num >= rand_num) {
+                return this.block_dict[key][0];
+            }
+        }
+    }
 
     nextBlock() {
-        // pick block
-        this.block_dict.concrete.setName(`block_${this.block_idx}`);
+        // pick a type of block
+        let pick_block = this.pickBlock();
+
+        pick_block.setName(`block_${this.block_idx}`);
         this.block_idx += 1;
 
         let x_tmp = getRandomFloat(-8, 8);
         let z_tmp = getRandomFloat(-8, 8);
-        this.block_dict.concrete.setPosition(x_tmp, this.curr_bottom_height, z_tmp);
+        pick_block.setPosition(x_tmp, this.curr_bottom_height, z_tmp);
 
         this.curr_bottom_height -= this.block_interval;
 
         // add block
-        this.world.addGround(this.block_dict.concrete);
+        this.world.addGround(pick_block);
     }
 
     // updata the block in game, check if block need to remove or add

@@ -12,6 +12,8 @@ bgm_audio.loop = true;
  */
 let fpc = null;
 
+const my_models = {};
+
 const models = {};
 
 const audios = {};
@@ -31,6 +33,7 @@ let s_manager = null;
 let w_manager = null;
 
 let a_manager = null;
+
 // ==
 
 let lowering_speed = 0.03;
