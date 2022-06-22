@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>3d 下樓梯 :3</title>
+    <title>3d down stair :3</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
     <script src="./scripts/game_variables.js"></script>
@@ -70,28 +70,67 @@
         </div>
     </div>
 
+    <!--how to play-->
+    <div id="how_to_play" class="align_center">
+
+        <div id="left_arrow_container"> <i id="left_arrow"></i></div>
+        <div id="right_arrow_container"><i id="right_arrow"></i></div>
+
+        <div id="how_to_play_content" class="box">
+
+            <table id="how_to_play_table">
+                <tr>
+                    <td>
+                        <img class="page" src="./material/pictures/page1.png">
+                    </td>
+                    <td>
+                        <img class="page" src="./material/pictures/page2.png">
+                    </td>
+                    <td>
+                        <img class="page" src="./material/pictures/page3.png">
+                    </td>
+                    <td>
+                        <img class="page" src="./material/pictures/page4.png">
+                    </td>
+                    <td>
+                        <img class="page" src="./material/pictures/page5.png">
+                    </td>
+                    <td>
+                        <img class="page" src="./material/pictures/page6.png">
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+
+        <div class="right_button">
+            <div>
+                <img id="how_to_play_close" src="./material/pictures/close-icon.png">
+            </div>
+        </div>
+
+    </div>
+
     <!--more-->
     <div id="more" class="align_center">
 
         <div id="more_content" class="box"> </div>
 
-        <div id="more_right">
+        <div class="right_button">
             <div>
                 <img id="more_close" src="./material/pictures/close-icon.png">
             </div>
-
-            <div id="more_links">
-
-            </div>
         </div>
 
-
     </div>
+
+
 
     <!--end scene-->
     <div id="you_dead" class="align_center" style="visibility :hidden">
         <div class="box">
-            <p style="color: white; font-size: 35px;">YOU DIED</p>
+            <p style="color: white; font-size: 35px;">YOU DEAD</p>
         </div>
 
         <div class="box">
@@ -105,7 +144,7 @@
 
     <!--version tag-->
     <div id="version" class="align_right_bottom">
-        <p>ver1.3.0</p>
+        <p>ver1.3.1</p>
     </div>
 
 

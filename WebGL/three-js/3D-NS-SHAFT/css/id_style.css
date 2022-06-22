@@ -140,9 +140,11 @@
 }
 
 #more_content {
-    margin-left: 10vh;
     width: 30vw;
     max-height: 70vh;
+
+    margin: auto;
+
     border-radius: 15px;
     border-color: rgb(17, 17, 17);
     border-width: 5px;
@@ -150,6 +152,7 @@
     background-color: rgb(127, 182, 245);
 
     overflow-y: overlay;
+    font-family: "Comic Sans MS";
 
     float: left;
 }
@@ -159,15 +162,10 @@
 }
 
 
-#more_right {
-    float: right;
-
-    transform: translate(-70%, -5%);
-}
-
 #more_close {
     width: 8vh;
     height: 8vh;
+    position: relative;
 
     cursor: pointer;
 }
@@ -177,6 +175,107 @@
     height: 10vh;
 
     margin-top: 3vh;
+}
+
+
+#how_to_play {
+    z-index: 3;
+
+    margin-top: 100vh;
+    transition: all 600ms EASE-IN-OUT;
+}
+
+#how_to_play_content {
+    width: 70vh;
+    height: 40vh;
+    margin: auto;
+    border-radius: 15px;
+    border-color: rgb(17, 17, 17);
+    border-width: 5px;
+    border-style: solid;
+    background-color: rgb(210, 231, 255);
+
+    position: relative;
+    float: left;
+    overflow-x: overlay;
+}
+
+#how_to_play_content::-webkit-scrollbar {
+    display: none;
+}
+
+#how_to_play_table {
+    transition: all 600ms EASE-IN-OUT;
+}
+
+#how_to_play_close {
+    width: 8vh;
+    height: 8vh;
+    position: relative;
+
+    cursor: pointer;
+}
+
+#left_arrow_container {
+    z-index: 2;
+
+    width: 5vh;
+    height: 16vh;
+
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+
+    background-color: rgba(100, 100, 100, 0.3);
+    border-radius: 0 10px 10px 0;
+    position: absolute;
+    float: left;
+}
+
+#right_arrow_container {
+    z-index: 2;
+
+    width: 5vh;
+    height: 16vh;
+
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+
+    background-color: rgba(100, 100, 100, 0.3);
+    border-radius: 10px 0 0 10px;
+    position: absolute;
+    float: right;
+}
+
+#left_arrow {
+    display: block;
+
+    position: absolute;
+    top: 7vh;
+    right: 0;
+    border: solid black;
+    border-width: 0 3px 3px 0;
+
+    width: 2vh;
+    height: 2vh;
+
+    transform: rotate(135deg);
+
+}
+
+#right_arrow {
+
+    position: absolute;
+    top: 7vh;
+    left: 0;
+    border: solid black;
+    border-width: 0 3px 3px 0;
+
+    width: 2vh;
+    height: 2vh;
+
+    transform: rotate(-45deg);
 }
 
 #you_dead {

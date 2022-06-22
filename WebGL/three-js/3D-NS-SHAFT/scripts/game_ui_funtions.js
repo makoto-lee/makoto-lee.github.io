@@ -5,7 +5,14 @@ const depth_div = document.getElementById("depth");
 // ==
 const title_div = document.getElementById("title");
 const start_button = document.getElementById("start_button");
+// ==
 const how_to_play_button = document.getElementById("how_to_play_button");
+const how_to_play_div = document.getElementById("how_to_play");
+const close_how_to_play_button = document.getElementById("how_to_play_close");
+// ==
+const right_page_div = document.getElementById("right_arrow_container");
+const left_page_div = document.getElementById("left_arrow_container");
+const how_to_play_table = document.getElementById("how_to_play_table");
 // ==
 const more_button = document.getElementById("more_button");
 const more_div = document.getElementById("more");
@@ -65,6 +72,7 @@ export function game_start() {
     // audios
     a_manager.on();
     bgm_audio.play();
+    title_bgm_audio.pause();
 
     // ================================================
     game_running = true;
@@ -114,6 +122,40 @@ function game_resume() {
 continue_button.onclick = game_resume;
 
 
+function read_how_to_play() {
+
+    how_to_play_div.style.visibility = "visible";
+    how_to_play_div.style.marginTop = "0vh";
+
+}
+how_to_play_button.onclick = read_how_to_play;
+
+function close_how_to_play() {
+
+    how_to_play_div.style.marginTop = "100vh";
+    how_to_play_div.style.visibility = "hidden";
+
+}
+close_how_to_play_button.onclick = close_how_to_play;
+
+const page_num = 6;
+let curr_page = 0;
+function right_page() {
+
+    curr_page = (curr_page + 1) % page_num;
+    how_to_play_table.style.transform = `translateX(${-70 * curr_page}vh)`;
+
+}
+right_page_div.onclick = right_page;
+
+function left_page() {
+
+    curr_page = (curr_page + page_num - 1) % page_num;
+    how_to_play_table.style.transform = `translateX(${-70 * curr_page}vh)`;
+
+}
+left_page_div.onclick = left_page;
+
 async function downloadFile() {
     let response = await fetch("./updata_diary.txt");
 
@@ -126,12 +168,6 @@ async function downloadFile() {
 
     return text_data;
 }
-
-function read_how_to() {
-    alert("stay alive");
-}
-how_to_play_button.onclick = read_how_to;
-
 
 function read_more() {
 
@@ -164,5 +200,6 @@ function back_to_title() {
     health_div.style.visibility = "hidden";
     depth_div.style.visibility = "hidden";
     title_div.style.visibility = "visible";
+    title_bgm_audio.play();
 }
 back_to_title_button.onclick = back_to_title;

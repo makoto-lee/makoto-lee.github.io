@@ -4,8 +4,13 @@ let game_running = false;
 
 // ===
 let bgm_audio = new Audio('./material/audios/bgm.mp3');
-bgm_audio.volume = 0.2;
+bgm_audio.volume = 0.15;
 bgm_audio.loop = true;
+
+
+let title_bgm_audio = new Audio('./material/audios/syndrome-official-youtube-channel.mp3');
+title_bgm_audio.volume = 0.2;
+title_bgm_audio.loop = true;
 
 /**
  * @type {FirstPersonController}

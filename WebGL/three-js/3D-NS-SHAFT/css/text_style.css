@@ -1,7 +1,5 @@
-@import url("https://fonts.googleapis.com/css?  family=Lora:400,400i,700,700i");
 
 #title_text #ns-shaft {
-    font-family: Lora;
     letter-spacing: 10px;
     stroke: #ff3fac;
     font-size: 40px;
@@ -28,7 +26,6 @@
 }
 
 #title_text #ddd {
-    font-family: Lora;
     letter-spacing: 10px;
     stroke: #b8b8b8;
     font-size: 40px;

@@ -69,6 +69,9 @@ function main() {
     audios["damaged"] = {
         audio_url: './material/audios/oof_hurt.mp3'
     }
+    audios["lobby_bgm"] = {
+        audio_url: './material/audios/syndrome-official-youtube-channel.mp3'
+    }
 
 
     {
@@ -401,8 +404,8 @@ function main() {
         document.getElementById("three_js").style.visibility = "hidden";
         document.getElementById("title").style.visibility = "visible";
 
-        // play bgm
-
+        // play lobby_bgm
+        title_bgm_audio.play();
 
         // ===========================================================
 
