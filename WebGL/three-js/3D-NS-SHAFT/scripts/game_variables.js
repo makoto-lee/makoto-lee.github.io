@@ -12,6 +12,10 @@ let title_bgm_audio = new Audio('./material/audios/syndrome-official-youtube-cha
 title_bgm_audio.volume = 0.2;
 title_bgm_audio.loop = true;
 
+let button_hover_audio = new Audio('./material/audios/button_click.mp3');
+button_hover_audio.volume = 0.7;
+button_hover_audio.loop = false;
+
 /**
  * @type {FirstPersonController}
  */
@@ -42,3 +46,8 @@ let a_manager = null;
 // ==
 
 let lowering_speed = 0.03;
+
+// ==
+
+let curr_score = 0;
+let max_score = 0;

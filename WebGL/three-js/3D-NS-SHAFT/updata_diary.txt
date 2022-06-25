@@ -1,3 +1,11 @@
+ver 1.4.0 (2022/6/)
+
+* Add score recording 
+
+* Add the button hover sound effect
+
+ =======================
+
 ver 1.3.1 (2022/6/22)
 
 * Add lobby bgm

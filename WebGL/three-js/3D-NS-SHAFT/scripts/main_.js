@@ -13,9 +13,13 @@ import { AudioManager } from "./AudioManager.js";
 import { Ceiling } from "./Ceiling.js";
 
 
-function sleep(delay) {
-    var start = new Date().getTime();
-    while (new Date().getTime() < start + delay);
+function getCookieScore() {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; max_score=`);
+    if (parts.length === 2)
+        return parts.pop().split(';').shift();
+    else
+        return -1;
 }
 
 const listener = new THREE.AudioListener();
@@ -407,8 +411,23 @@ function main() {
         // play lobby_bgm
         title_bgm_audio.play();
 
+
         // ===========================================================
 
+        const health_bar_elem = document.getElementById("health_bar");
+        const depth_num_elem = document.getElementById("depth_num");
+        const max_depth_num_elem = document.getElementById("max_depth_num");
+
+
+        // load score
+        max_score = getCookieScore();
+        if (max_score == -1) {
+            document.cookie = "max_score=0";
+            max_score = 0;
+        }
+        max_depth_num_elem.innerText = max_score;
+
+        // ===========================================================
 
         /**
          * start rendering
@@ -423,8 +442,6 @@ function main() {
         /**
         * start gaming control
         */
-        const health_bar_elem = document.getElementById("health_bar");
-        const depth_num_elem = document.getElementById("depth_num");
 
         let in_air_before, in_air_after;
 
@@ -460,7 +477,12 @@ function main() {
                     health_bar_elem.style.width = `${s_manager.state.health / s_manager.state.max_health * 100}%`;
 
                     // update depth
-                    depth_num_elem.innerText = `${(fpc.box.position.y * (-1) / 4) | 0}`
+                    curr_score = (fpc.box.position.y * (-1) / 4) | 0;
+                    depth_num_elem.innerText = `${curr_score}`;
+                    if (max_score < curr_score) {
+                        max_score = curr_score;
+                        max_depth_num_elem.innerText = `${max_score}`;
+                    }
 
                     // player state check
                     if (s_manager.state.health <= 0) {

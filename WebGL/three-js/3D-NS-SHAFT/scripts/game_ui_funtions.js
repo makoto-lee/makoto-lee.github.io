@@ -23,6 +23,25 @@ const you_dead_div = document.getElementById("you_dead");
 const continue_button = document.getElementById("continue_button");
 const back_to_title_button = document.getElementById("back_to_title_button");
 
+// =============================================
+
+
+for (let i = 0; i < document.getElementsByClassName("btn").length; i++) {
+
+    document.getElementsByClassName("btn")[i].addEventListener("mouseenter", () => {
+        button_hover_audio.play();
+    });
+
+    document.getElementsByClassName("btn")[i].addEventListener("mouseleave", () => {
+        button_hover_audio.pause();
+        button_hover_audio.currentTime = 0;
+    });
+}
+
+
+
+// =============================================
+
 export function game_start() {
 
     // show health bar    
@@ -81,6 +100,11 @@ export function game_start() {
 export function game_end() {
 
     console.log("you dead !");
+
+    // ================================================
+    // record score in cookie
+    console.log("max score : ", max_score);
+    document.cookie = `max_score=${max_score}`;
 
     // ================================================
     // audios

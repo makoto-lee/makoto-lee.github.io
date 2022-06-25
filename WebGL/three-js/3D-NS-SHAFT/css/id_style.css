@@ -49,32 +49,19 @@
     background-color: rgb(190, 0, 0);
 }
 
-#depth {
-    user-select: none;
+#curr_depth {
+    transform: translate(0, -5px);
 
-    margin-top: 6px;
-
-    box-shadow: 0px 0.5px 2px 5px rgb(128, 128, 128);
-
-    border-radius: 7px;
-    border-width: 5px;
-    border-color: black;
-    border-style: solid;
-    background-color: rgb(255, 255, 255);
-
-    font-family: "Comic Sans MS";
-    font-size: large;
-    font-weight: 600;
+    width: 22vh;
+    min-width: 160px;
 }
 
-#depth_num {
+#max_depth {
+    
+    transform: translate(0, -10px);
 
-    display: inline;
-    margin-right: 5px;
-
-    font-family: "Comic Sans MS";
-    font-size: large;
-    font-weight: 600;
+    width: 14vh;
+    min-width: 120px;
 }
 
 #version {
@@ -122,6 +109,8 @@
 }
 
 #title {
+    user-select: none;
+
     z-index: 2;
 
     border-width: 2px;
