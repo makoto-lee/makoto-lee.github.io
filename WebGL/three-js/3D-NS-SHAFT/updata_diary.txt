@@ -1,4 +1,10 @@
-ver 1.4.0 (2022/6/)
+ver 1.4.1 (2022/6/28)
+
+* Add my github link :D
+
+ =======================
+
+ver 1.4.0 (2022/6/24)
 
 * Add score recording 
 
