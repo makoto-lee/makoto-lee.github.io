@@ -57,7 +57,7 @@
 }
 
 #max_depth {
-    
+
     transform: translate(0, -10px);
 
     width: 14vh;
@@ -276,4 +276,27 @@
     border-style: solid;
 
     text-align: center;
+}
+
+#github {
+
+    width: 8vh;
+    height: 8vh;
+    
+    right: 0;
+    position: absolute;
+
+    transform: translate(50%, 70%);
+    border-radius: 50%;
+    background-color: black;
+
+}
+
+#github-link {
+    width: 8vh;
+    height: 8vh;
+    position: relative;
+
+
+    cursor: pointer;
 }
