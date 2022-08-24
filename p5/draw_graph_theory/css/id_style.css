@@ -1,0 +1,35 @@
+#main_div {
+    margin: auto;
+    text-align: center;
+}
+
+#main_canvas {
+    width: 600px;
+    height: 400px;
+    border: 1px solid #000000;
+}
+
+#canvas_div {
+    float: left;
+    margin-left: 10px;
+}
+
+#left {
+    float: left;
+
+    font-size: 14px;
+}
+
+#enter_text {
+    resize: none;
+    width: 200px;
+    height: 350px;
+}
+
+#start_button {
+    width: 80px;
+}
+
+#example_button {
+    width: 80px;
+}

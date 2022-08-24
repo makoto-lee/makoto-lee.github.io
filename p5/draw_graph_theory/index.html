@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <link rel="stylesheet" href="./css/class_style.css">
+    <link rel="stylesheet" href="./css/id_style.css">
+
+    <script src="p5.js"></script>
+    <!--
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js"></script>
+        <script src="./lalolib/lalolib.js"></script>
+    -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.0.1/math.min.js"></script>
+    <script src="./scripts/const_variables.js"></script>
+    <script src="./scripts/graph.js"></script>
+    <script src="./scripts/main.js"></script>
+
+</head>
+
+<body>
+
+    <div id="main_div">
+
+
+        <div id="left">
+
+            <textarea id="enter_text" placeholder="ex : 1 -> 2"></textarea>
+            <br>
+            <button id="start_button" onclick="start()">start</button>
+
+            <button id="example_button" onclick="example()">example</button>
+
+            <br>
+            <label class="switch">
+                <input id="fiedler_support_checkbox" type="checkbox" checked onchange="supportSwitch()">
+                <span class="slider round"></span>
+            </label>
+            algebraic connectivity support
+
+        </div>
+
+        <div id="canvas_div"> </div>
+
+    </div>
+
+</body>
+
+</html>
