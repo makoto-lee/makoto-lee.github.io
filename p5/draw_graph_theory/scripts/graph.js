@@ -1,7 +1,10 @@
 
 class NodeData {
 
-    constructor() {
+    /**
+     * @param {String} name 
+     */
+    constructor(name) {
 
         this.position = new p5.Vector(
             Math.random() * 10 + canvas_height / 2,
@@ -13,6 +16,8 @@ class NodeData {
         this.acceleration = new p5.Vector(0, 0);
 
         this.curr_force = new p5.Vector(0, 0);
+
+        this.name = name;
     }
 
     /**
@@ -81,39 +86,54 @@ class Graph {
         this.num_node = 0;
         this.node_datas = [];
         this.spring_list = [];
+        this.name_map = {};
     }
 
-
-    addEdge(node1, node2) {
+    /**
+     * @param {String} node_name1 
+     * @param {String} node_name2 
+     */
+    addEdge(node_name1, node_name2) {
 
         // if a duplicate edge
         // if a self loop
 
-        if (this.node_datas[node1] == undefined) {
 
-            this.node_datas[node1] = new NodeData();
 
-            this.connect_list[node1] = [];
+        if (this.name_map[node_name1] == undefined) {
 
-            this.num_node = this.node_datas.length;
+            this.name_map[node_name1] = this.num_node;
+
+            this.num_node++;
+
+            this.node_datas[this.name_map[node_name1]] = new NodeData(node_name1);
+
+            this.connect_list[this.name_map[node_name1]] = [];
         }
 
-        if (this.node_datas[node2] == undefined) {
+        if (this.name_map[node_name2] == undefined) {
 
-            this.node_datas[node2] = new NodeData();
+            this.name_map[node_name2] = this.num_node;
 
-            this.connect_list[node2] = [];
+            this.num_node++;
 
-            this.num_node = this.node_datas.length;
+            this.node_datas[this.name_map[node_name2]] = new NodeData(node_name2);
+
+            this.connect_list[this.name_map[node_name2]] = [];
         }
 
+        let node_name1_idx = this.name_map[node_name1];
 
-        this.connect_list[node1].push(node2);
+        let node_name2_idx = this.name_map[node_name2];
 
-        this.connect_list[node2].push(node1);
+        //
+
+        this.connect_list[node_name1_idx].push(node_name2_idx);
+
+        this.connect_list[node_name2_idx].push(node_name1_idx);
 
         this.spring_list.push(
-            new Spring(0.005, 50, this.node_datas[node1], this.node_datas[node2])
+            new Spring(0.005, 50, this.node_datas[node_name1_idx], this.node_datas[node_name2_idx])
         );
     }
 
@@ -186,7 +206,13 @@ function drawGraph(graph) {
     // draw nodes
     for (let idx in graph.node_datas) {
 
-        circle(graph.node_datas[idx].position.x, graph.node_datas[idx].position.y, 20);
+        let X = graph.node_datas[idx].position.x;
+
+        let Y = graph.node_datas[idx].position.y;
+
+        circle(X, Y, 20);
+
+        text(graph.node_datas[idx].name, X - (4 * graph.node_datas[idx].name.length), Y + 5);
 
     }
 }

@@ -19,28 +19,18 @@ main_graph.addEdge(1, 2);
 main_graph.addEdge(2, 3);
 main_graph.addEdge(3, 4);
 main_graph.addEdge(4, 0);
-*/
 
 
-/*
-wiki example
-
-main_graph.addEdge(5, 3);
-main_graph.addEdge(3, 4);
-main_graph.addEdge(2, 3);
-main_graph.addEdge(2, 1);
-main_graph.addEdge(4, 1);
-main_graph.addEdge(4, 0);
-main_graph.addEdge(1, 0);
-*/
-/*
-5 -> 3
-3 -> 4
-2 -> 3
-2 -> 1
+0 -> 2
+2 -> 4
 4 -> 1
+1 -> 3
+3 -> 0
+0 -> 1
+1 -> 2
+2 -> 3
+3 -> 4
 4 -> 0
-1 -> 0
 */
 
 
@@ -84,9 +74,37 @@ function isEmptyLine(line) {
 
 }
 
+/**
+ * @param {String} node_name 
+ */
+function removeSpace(node_name) {
+
+    let start = 0;
+    let end = node_name.length - 1;
+
+    for (; start < node_name.length; start++) {
+        if (node_name[start] != ' ')
+            break;
+    }
+
+    for (; end >= 0; end--) {
+        if (node_name[end] != ' ')
+            break;
+    }
+
+    console.log("start & end");
+    console.log(start, end);
+
+    let rt = node_name.slice(start, end + 1);
+    if (rt.length == 0)
+        return false;
+
+    return rt;
+}
+
 // =======================================================
 
-const re = /[0-9]*\s*(->)\s*[0-9]*/;
+const re = /( -> )/;
 
 /**
  * @param {String} input_text
@@ -103,9 +121,7 @@ function readGraph(input_text) {
         if (isEmptyLine(lines[idx]))
             continue;
 
-        let match_rlt = lines[idx].match(re);
-
-        if (match_rlt[0] != match_rlt.input) {
+        if (!lines[idx].match(re)) {
 
             alert("Invalid input :" + lines[idx]);
             return false;
@@ -128,15 +144,15 @@ function readGraph(input_text) {
     // load to main_graph
     for (const idx in ok_lines) {
 
-        let tmp = ok_lines[idx].split("->");
+        let tmp = ok_lines[idx].split(" -> ");
 
-        let node_1 = parseInt(tmp[0]);
+        let node_name1 = removeSpace(tmp[0]);
 
-        let node_2 = parseInt(tmp[1]);
+        let node_name2 = removeSpace(tmp[1]);
 
-        console.log(node_1, node_2);
+        console.log(node_name1, node_name2);
 
-        main_graph.addEdge(node_1, node_2);
+        main_graph.addEdge(node_name1, node_name2);
 
     }
 
