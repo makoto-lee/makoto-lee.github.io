@@ -5,6 +5,8 @@ var graph_avalible = false;
 
 var main_fiedler_vector = [];
 
+var main_fiedler_vector_sigmoid = [];
+
 var fiedler_support = true;
 
 /*
@@ -176,14 +178,9 @@ function example() {
 
     const text_area = document.getElementById("enter_text");
 
-    text_area.value =
-        `5 -> 3
-3 -> 4
-2 -> 3
-2 -> 1
-4 -> 1
-4 -> 0
-1 -> 0`;
+    let random_idx = Math.floor(Math.random() * input_examples.length);
+
+    text_area.value = input_examples[random_idx];
 
     return;
 }
@@ -211,11 +208,21 @@ function start() {
 
         main_fiedler_vector = main_graph.fiedlerVector()
 
-        console.log("fiedlerVector", main_fiedler_vector);
+        for (let idx in main_fiedler_vector) {
+            main_fiedler_vector_sigmoid.push(sigmoid(main_fiedler_vector[idx]));
+        }
+
+        console.log("Fiedler Vector", main_fiedler_vector);
+
+        console.log("Fiedler Vector Sigmoid", main_fiedler_vector_sigmoid);
 
         graph_avalible = true;
     }
 
+}
+
+function sigmoid(x) {
+    return 1 / (1 + Math.exp(x));
 }
 
 setInterval(() => {
@@ -231,11 +238,13 @@ setInterval(() => {
 
                     let diff_vec = p5.Vector.sub(main_graph.node_datas[i].position, main_graph.node_datas[j].position);
 
+                    let diff_mag = p5.Vector.mag(diff_vec);
+
                     let diff_nor = p5.Vector.normalize(diff_vec);
 
-                    let algebra_distance = Math.abs(main_fiedler_vector[i] - main_fiedler_vector[j]);
+                    let algebra_distance = Math.abs(main_fiedler_vector_sigmoid[i] - main_fiedler_vector_sigmoid[j]);
 
-                    let force = p5.Vector.mult(diff_nor, algebra_distance * 0.03);
+                    let force = p5.Vector.mult(diff_nor, algebra_distance / diff_mag * 8);
 
                     main_graph.node_datas[i].addForce(force);
 
