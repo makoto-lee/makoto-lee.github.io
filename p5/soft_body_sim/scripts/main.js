@@ -180,6 +180,8 @@ function stop() {
 function clear_scene() {
 
     main_scene.ground_dict = {};
+    canvas_clear();
+    main_scene.draw();
 }
 
 setInterval(() => {
